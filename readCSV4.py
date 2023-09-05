@@ -6,11 +6,13 @@ csv_file_path = '2023_9_5_output_blocks_cont.csv'
 
 # Read the CSV file and extract the data
 data = []
+names = []  # Create an empty list to store the names
 with open(csv_file_path, 'r') as csv_file:
     csv_reader = csv.reader(csv_file)
     header = next(csv_reader)  # Get the header row
     for row in csv_reader:
         name = row[0]
+        names.append(name)  # Store the names in the same order as the data
         # Extract and convert points from CSV to tuples
         points = []
         for point_str in row[1:-3]:
@@ -66,10 +68,21 @@ for feature_index, feature_name in enumerate(header[-3:], start=len(data[0][0]) 
 
     if feature_index in discrete_features:
         # Draw shapes for discrete values using extracted points and features
+        count=0
         for points, feature in data:
             fill_color = color_mapping.get(feature[feature_index - len(data[0][0]) - 1], 'black')  # Get color based on feature value
             adjusted_points = [(int(p[0] - min_x + 50), int(p[1] - min_y + 50)) for p in points]  # Adjust points based on image dimensions
             draw.polygon(adjusted_points, outline='black', fill=fill_color)
+
+            # Calculate the center of the rectangle
+            center_x = sum(p[0] for p in adjusted_points) // len(adjusted_points)
+            center_y = sum(p[1] for p in adjusted_points) // len(adjusted_points)
+
+            # Draw the name as text in the center
+            text_x = center_x - (len(feature) * 2)  # Adjust text position based on text length
+            text_y = center_y - 10  # Adjust text position vertically
+            draw.text((text_x, text_y), names[count], font=font, fill='black')
+            count = count + 1
 
         # Create a legend for discrete values
         for i, label in enumerate(['0', '1', '2', '3', '4', '5']):
@@ -83,13 +96,23 @@ for feature_index, feature_name in enumerate(header[-3:], start=len(data[0][0]) 
         min_value = min(feature[feature_index - len(data[0][0]) - 1] for _, feature in data)
         max_value = max(feature[feature_index - len(data[0][0]) - 1] for _, feature in data)
         color_range = max_value - min_value
-
+        count = 0
         for points, feature in data:
             normalized_value = (feature[feature_index - len(data[0][0]) - 1] - min_value) / color_range
             grayscale_value = int(255 * normalized_value)
             fill_color = (grayscale_value, grayscale_value, grayscale_value)
             adjusted_points = [(int(p[0] - min_x + 50), int(p[1] - min_y + 50)) for p in points]  # Adjust points based on image dimensions
             draw.polygon(adjusted_points, outline='black', fill=fill_color)
+
+            # Calculate the center of the rectangle
+            center_x = sum(p[0] for p in adjusted_points) // len(adjusted_points)
+            center_y = sum(p[1] for p in adjusted_points) // len(adjusted_points)
+
+            # Draw the name as text in the center
+            text_x = center_x - (len(feature) * 2)  # Adjust text position based on text length
+            text_y = center_y - 10  # Adjust text position vertically
+            draw.text((text_x, text_y), names[count], font=font, fill='red')
+            count = count + 1
 
         # Create a grayscale legend for continuous values
         for i, label in enumerate(['Low', 'High']):
@@ -102,4 +125,3 @@ for feature_index, feature_name in enumerate(header[-3:], start=len(data[0][0]) 
 
     # Save the generated image
     image.save(output_image_path)
-    #test2
