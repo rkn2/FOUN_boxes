@@ -34,7 +34,10 @@ image_height = int(max_y - min_y + 400)  # Add some padding for labels
 color_mapping = {
     0: 'green',
     1: 'yellow',
-    2: 'red'
+    2: '#FFD700',  # Yellow-Orange
+    3: 'orange',   # Full orange
+    4: '#FF6347',  # Light red
+    5: 'red'       # Dark red
 }
 
 # Choose a font for labeling
@@ -61,7 +64,7 @@ for feature_index, feature_name in enumerate(header[-3:], start=len(data[0][0]) 
             draw.polygon(adjusted_points, outline='black', fill=fill_color)
 
         # Create a legend for discrete values
-        for i, label in enumerate(['0', '1', '2']):
+        for i, label in enumerate(['0', '1', '2', '3', '4', '5']):
             legend_x = image_width - 150
             legend_y = 50 + i * 50
             draw.rectangle([legend_x, legend_y, legend_x + 30, legend_y + 30], outline='black',
