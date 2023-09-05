@@ -27,8 +27,8 @@ max_x = max(p[0] for points, _ in data for p in points)
 max_y = max(p[1] for points, _ in data for p in points)
 min_x = min(p[0] for points, _ in data for p in points)
 min_y = min(p[1] for points, _ in data for p in points)
-image_width = int(max_x - min_x + 100)  # Add some padding for labels
-image_height = int(max_y - min_y + 100)  # Add some padding for labels
+image_width = int(max_x - min_x + 400)  # Add some padding for labels
+image_height = int(max_y - min_y + 400)  # Add some padding for labels
 
 # Create a color mapping for discrete values
 color_mapping = {
