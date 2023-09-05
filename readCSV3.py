@@ -30,6 +30,14 @@ min_y = min(p[1] for points, _ in data for p in points)
 image_width = int(max_x - min_x + 400)  # Add some padding for labels
 image_height = int(max_y - min_y + 400)  # Add some padding for labels
 
+# Separate discrete and continuous feature columns
+discrete_features = [feature_index for feature_index, feature in enumerate(data[0][1], start=len(data[0][0]) + 1) if
+                     isinstance(feature, int)]
+continuous_features = [feature_index for feature_index, feature in enumerate(data[0][1], start=len(data[0][0]) + 1) if
+                       isinstance(feature, float)]
+
+
+
 # Create a color mapping for discrete values
 color_mapping = {
     0: 'green',
