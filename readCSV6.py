@@ -22,7 +22,16 @@ with open(csv_file_path, 'r') as csv_file:
             point = tuple(map(float, point_str.split(',')))
             points.append(point)
         # Handle discrete and continuous values, converting to appropriate types
-        features = [float(feature) if '.' in feature else int(feature) for feature in row[-3:]]  # Extract features # HERE
+        features = []
+        for feature in row[-3:]:
+            if not feature:
+                # Replace empty entries with '-'
+                feature = '-'
+            elif '.' in feature:
+                feature = float(feature)
+            else:
+                feature = int(feature)
+            features.append(feature)
         data.append((points, features))
 
 # Calculate image dimensions based on the extracted points
@@ -71,7 +80,7 @@ for feature_index, feature_name in enumerate(header[-3:], start=len(data[0][0]) 
         # Draw shapes for discrete values using extracted points and features
         count=0
         for points, feature in data:
-            fill_color = color_mapping.get(feature[feature_index - len(data[0][0]) - 1], 'black')  # Get color based on feature value
+            fill_color = color_mapping.get(feature[feature_index - len(data[0][0]) - 1], 'white')  # Get color based on feature value
             adjusted_points = [(int(p[0] - min_x + 50), int(p[1] - min_y + 50)) for p in points]  # Adjust points based on image dimensions
             draw.polygon(adjusted_points, outline='black', fill=fill_color)
 
