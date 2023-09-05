@@ -38,6 +38,9 @@ run boundingBoxes2.py in the same place as your .dxf.
 
 # create feature vector file
 copy the output_blocks.csv and add feature columns to it. save that as output_blocks_cont.csv
+make sure that the first row is filled in, has a decimal if it needs to be continuous, and has a whole number if its categorical
+
 
 # Extracting the names, points, and creating images from feature vectors
-run readCSV.py in the same place as "output_blocks_cont.csv"
+run readCSV6.py in the same place as "output_blocks_cont.csv"
+you hard coded the number of feature columns so if you add another feature update that variable at the top ofthe code i readCSV.
