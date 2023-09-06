@@ -3,9 +3,9 @@ from PIL import Image, ImageDraw, ImageFont
 from matplotlib import pyplot as plt
 
 # Define the path to the CSV file containing data
-csv_file_path = '2023_9_5_output_blocks_cont3.csv'
+csv_file_path = '2023_9_5_output_blocks_cont4.csv'
 #num feature columns
-featCols = 18
+featCols = 19
 
 # Read the CSV file and extract the data
 data = []
