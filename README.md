@@ -42,5 +42,6 @@ make sure that the first row is filled in, has a decimal if it needs to be conti
 
 
 # Extracting the names, points, and creating images from feature vectors
-run readCSV6.py in the same place as "output_blocks_cont.csv"
+run readCSV7.py in the same place as "output_blocks_cont.csv"
 you hard coded the number of feature columns so if you add another feature update that variable at the top ofthe code i readCSV.
+FYI: num features does not include wall name or any of the geometry points

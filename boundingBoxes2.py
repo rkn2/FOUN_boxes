@@ -5,8 +5,9 @@ import ezdxf  # Make sure to install the ezdxf library using "pip install ezdxf"
 # Each wall section needs to be a closed polyline in its own, named block
 
 # Define the path to your DWG file
-input_dwg = "WALL BLOCK1_v2.dxf"
-output_csv = "2023_9_5_output_blocks2.csv"
+#input_dwg = "WALL BLOCK1_v2.dxf" #original that works
+input_dwg = "WALL BLOCK-UPDATE-25.09.dxf"
+output_csv = "2023_9_27_output_blocks.csv"
 
 # Load the DWG file
 doc = ezdxf.readfile(input_dwg)  # Read the DWG file using ezdxf

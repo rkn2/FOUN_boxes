@@ -3,9 +3,17 @@ from PIL import Image, ImageDraw, ImageFont
 from matplotlib import pyplot as plt
 
 # Define the path to the CSV file containing data
-csv_file_path = '2023_9_5_output_blocks_cont4.csv'
+#works
+#date = '2023_9_5_'
+#csv_file_path = date+'output_blocks_cont4.csv'
 #num feature columns
-featCols = 19
+#featCols = 19
+
+#needs to work
+date = '2023_9_27_'
+csv_file_path = date+'targeted_eval.csv'
+#num feature columns
+featCols = 26
 
 # Read the CSV file and extract the data
 data = []
@@ -67,7 +75,7 @@ font = ImageFont.load_default()  # You can choose an appropriate font
 
 # Create images for each feature column
 for feature_index, feature_name in enumerate(header[-featCols:], start=len(data[0][0]) + 1): #HER
-    output_image_path = f'output_image_{feature_name}.png'
+    output_image_path = date+f'output_image_{feature_name}.png'
     image = Image.new('RGB', (image_width, image_height), 'white')  # Create an image based on calculated dimensions
     draw = ImageDraw.Draw(image)  # Create a drawing object for the image
 
