@@ -9,7 +9,9 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from pandas_profiling import ProfileReport
 
-file_path = '2023_9_5_output_blocks_cont4.csv'
+date = '2023_9_27_'
+file_path = date+'targeted_eval.csv'
+
 # Read the CSV file into a DataFrame
 df = pd.read_csv(file_path)
 
@@ -24,7 +26,12 @@ df = df.drop(columns=df.columns[columns_to_drop])
 columns_to_drop = ['Coat WGT SCR', 'Coat 4 WGT SCR', 'Wall nrm scr', 'Wall wgt scr', 'Total scr', 'Wall rank']
 
 # Use the .drop() method to remove the specified columns
-df = df.drop(columns=columns_to_drop)
+#df = df.drop(columns=columns_to_drop)
+
+# Check if each column exists before dropping it
+for column in columns_to_drop:
+    if column in df.columns:
+        df = df.drop(columns=column)
 
 # do reporting if desired
 #prof = ProfileReport(df)
@@ -80,4 +87,4 @@ sns.set(font_scale=1)
 sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', linewidths=.5, fmt=".2f")
 
 plt.title('Cross-Correlation Heatmap with Correlation Coefficients')
-plt.savefig('heatmap.png')  # Save the figure to a file
+plt.savefig(date+'heatmap.png')  # Save the figure to a file
