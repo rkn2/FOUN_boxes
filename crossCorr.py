@@ -23,7 +23,7 @@ df = df.drop(columns=df.columns[columns_to_drop])
 # Use dropna() to remove rows with missing values
 # df_cleaned = df.dropna() # takes away too many
 
-columns_to_drop = ['Coat WGT SCR', 'Coat 4 WGT SCR', 'Wall nrm scr', 'Wall wgt scr', 'Total scr', 'Wall rank']
+columns_to_drop = ['Coat WGT SCR', 'Coat 4 WGT SCR', 'Wall NRM SCR ', 'Wall WGT SCR', 'Total Scr', 'Wall Rank']
 
 # Use the .drop() method to remove the specified columns
 #df = df.drop(columns=columns_to_drop)
@@ -37,54 +37,38 @@ for column in columns_to_drop:
 #prof = ProfileReport(df)
 #prof.to_file(output_file='output_raw.html')
 
-correlation_matrix = df.corr()
+correlation_matrix = df.corr() #pearson correlation
 
 # Define a significance level (e.g., 0.05, which is common)
 alpha = 0.05
 
-# Create an empty list to store the significant correlations
-significant_correlations = []
+from scipy.stats import pearsonr
+import numpy as np
 
-# Loop through the rows and columns of the correlation matrix
-for i in range(len(correlation_matrix.columns)):
-    for j in range(i + 1, len(correlation_matrix.columns)):
-        column1 = df.iloc[:, i]
-        column2 = df.iloc[:, j]
+# Calculate p-values for Pearson correlation
+p_values = np.zeros((len(df.columns), len(df.columns)))
 
-        # Check for missing values in the pair of columns
-        if not column1.hasnans and not column2.hasnans:
-            correlation_coefficient = correlation_matrix.iloc[i, j]
-            p_value = stats.pearsonr(column1, column2)[1]  # Calculate the p-value
-            if p_value < alpha:
-                significant_correlations.append((i, j, correlation_coefficient, p_value))
+# Define your significance level (alpha)
+alpha = 0.05
 
-# Print the significant correlations
-for i, j, coefficient, p_value in significant_correlations:
-    col1_name = correlation_matrix.columns[i]
-    col2_name = correlation_matrix.columns[j]
-    print(f"Variables {col1_name} and {col2_name}: Correlation = {coefficient}, p-value = {p_value}")
+# Iterate through each pair of columns
+for i, col1 in enumerate(df.columns):
+    for j, col2 in enumerate(df.columns):
+        if i != j:  # Avoid calculating correlation with itself
+            # Check for NaNs or Infs in the columns
+            if df[col1].isnull().any() or df[col2].isnull().any() or np.isinf(df[col1]).any() or np.isinf(df[col2]).any():
+                p_values[i, j] = np.nan  # Set p-value to NaN for this pair
+            else:
+                corr, p_value = pearsonr(df[col1], df[col2])
+                p_values[i, j] = p_value
 
-
-# to see what values in my cross corr are above 0.25 (based on the output of p testing)
-# Define the threshold for correlation
-threshold = 0.25
-
-# Loop through the column names in the correlation matrix
-column_names = list(correlation_matrix.keys())
-for i in range(len(column_names)):
-    for j in range(i + 1, len(column_names)):
-        column1_name = column_names[i]
-        column2_name = column_names[j]
-        correlation_coefficient = correlation_matrix[column1_name][j]
-        if abs(correlation_coefficient) > threshold:
-            print("Variables '{}' and '{}': Correlation = {}".format(column1_name, column2_name, correlation_coefficient))
-
-# ^^ something seems off about this since its not pulling all the right numbers
+# Create a mask for statistically significant correlations
+mask = p_values >= alpha
 
 # Create a heatmap with correlation coefficients
-plt.figure(figsize=(20,16))
+plt.figure(figsize=(20, 16))
 sns.set(font_scale=1)
-sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', linewidths=.5, fmt=".2f")
+sns.heatmap(correlation_matrix, annot=True, mask=mask, cmap='coolwarm', linewidths=0.5, fmt=".2f")
 
 plt.title('Cross-Correlation Heatmap with Correlation Coefficients')
 plt.savefig(date+'heatmap.png')  # Save the figure to a file
