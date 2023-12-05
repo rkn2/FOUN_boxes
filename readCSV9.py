@@ -2,89 +2,82 @@ import csv
 from PIL import Image, ImageDraw, ImageFont
 from matplotlib import pyplot as plt
 
-# Define the path to the CSV file containing data
-#works
-#date = '2023_9_5_'
-#csv_file_path = date+'output_blocks_cont4.csv'
-#num feature columns
-#featCols = 19
-
-#needs to work
-date = '2023_12_5_'
+date = '2023_9_27_'
 csv_file_path = date+'targeted_eval.csv'
-#num feature columns
-featCols = 69 # this does not include points, just what is after
 
-# Read the CSV file and extract the data
-data = []
-names = []  # Create an empty list to store the names
-with open(csv_file_path, 'r') as csv_file:
-    csv_reader = csv.reader(csv_file)
-    header = next(csv_reader)  # Get the header row
-    for row in csv_reader:
-        name = row[0]
-        names.append(name)  # Store the names in the same order as the data
-        # Extract and convert points from CSV to tuples
-        points = []
-        for point_str in row[1:-featCols]:
-            if point_str.strip() == '':
-                continue  # Skip empty points
-            point = tuple(map(float, point_str.split(',')))
-            points.append(point)
-        # Handle discrete and continuous values, converting to appropriate types
-        features = []
-        for feature in row[-featCols:]:
-            if not feature:
-                # Replace empty entries with '-'
-                feature = '-'
-            elif '.' in feature:
-                feature = float(feature)
-            else:
-                feature = int(feature)
-            features.append(feature)
-        data.append((points, features))
+import csv
 
-# Calculate image dimensions based on the extracted points
-max_x = max(p[0] for points, _ in data for p in points)
-max_y = max(p[1] for points, _ in data for p in points)
-min_x = min(p[0] for points, _ in data for p in points)
-min_y = min(p[1] for points, _ in data for p in points)
-image_width = int(max_x - min_x + 400)  # Add some padding for labels
-image_height = int(max_y - min_y + 400)  # Add some padding for labels
+def extract_data_from_csv(csv_file_path):
+    data = []
+    names = []  # Create an empty list to store the names
 
-# Separate discrete and continuous feature columns
-discrete_features = [feature_index for feature_index, feature in enumerate(data[0][1], start=len(data[0][0]) + 1) if
-                     isinstance(feature, int)]
-continuous_features = [feature_index for feature_index, feature in enumerate(data[0][1], start=len(data[0][0]) + 1) if
-                       isinstance(feature, float)]
+    with open(csv_file_path, 'r') as csv_file:
+        csv_reader = csv.reader(csv_file)
+        header = next(csv_reader)  # Get the header row
+
+        for row in csv_reader:
+            name = row[0]
+            names.append(name)  # Store the names in the same order as the data
+            # Extract and convert points from CSV to tuples
+            points = []
+            for point_str in row[1:10]:  # Extract columns 1 to 9
+                if point_str.strip() == '':
+                    continue  # Skip empty points
+                point = tuple(map(float, point_str.split(',')))
+                points.append(point)
+            # Handle discrete and continuous values, converting to appropriate types
+            features = []
+            for feature in row[10:]:  # Extract columns from 10 to the end
+                if not feature:
+                    # Replace empty entries with '-'
+                    feature = '-'
+                elif '.' in feature:
+                    feature = float(feature)
+                else:
+                    feature = int(feature)
+                features.append(feature)
+            data.append((points, features))
+
+    return names, data
+
+# Example usage:
+names, data = extract_data_from_csv(csv_file_path)
 
 
+def calculate_image_dimensions(data, padding=400):
+    max_x = max(p[0] for points, _ in data for p in points)
+    max_y = max(p[1] for points, _ in data for p in points)
+    min_x = min(p[0] for points, _ in data for p in points)
+    min_y = min(p[1] for points, _ in data for p in points)
 
-# Create a color mapping for discrete values
-color_mapping = {
-    0: 'green',
-    1: 'yellow',
-    2: '#FFD700',  # Yellow-Orange
-    3: 'orange',   # Full orange
-    4: '#FF6347',  # Light red
-    5: 'red'       # Dark red
-}
+    image_width = int(max_x - min_x + padding)
+    image_height = int(max_y - min_y + padding)
+
+    return image_width, image_height
+
+
+# Example usage:
+image_width, image_height = calculate_image_dimensions(data)
+print(f"Image Dimensions: {image_width} x {image_height}")
+
+
+# based on the feature you are interested in
+# look up if it is continuous, discrete, or binary
+# based on that, look up the color scheme
+
+
+
+
+
+
+
+
 
 # Choose a font for labeling
 font = ImageFont.load_default()  # You can choose an appropriate font
 
 # Create images for each feature column
 for feature_index, feature_name in enumerate(header[-featCols:], start=len(data[0][0]) + 1): #HER
-    output_image_path = date+f'output_image_{feature_name}.png'
-    image = Image.new('RGB', (image_width, image_height), 'white')  # Create an image based on calculated dimensions
-    draw = ImageDraw.Draw(image)  # Create a drawing object for the image
-
-    # Calculate the title position based on image dimensions
-    title_x = image_width // 3
-    title_y = 20
-
-    # Add the feature name to the image
-    draw.text((title_x, title_y), feature_name, font=font, fill='black')
 
     if feature_index in discrete_features:
         # Draw shapes for discrete values using extracted points and features
