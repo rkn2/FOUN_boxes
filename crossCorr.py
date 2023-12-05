@@ -24,6 +24,7 @@ df = df.drop(columns=df.columns[columns_to_drop])
 # df_cleaned = df.dropna() # takes away too many
 
 columns_to_drop = ['Coat WGT SCR', 'Coat 4 WGT SCR', 'Wall NRM SCR ', 'Wall WGT SCR', 'Total Scr', 'Wall Rank']
+#columns_to_drop = []
 
 # Use the .drop() method to remove the specified columns
 #df = df.drop(columns=columns_to_drop)
@@ -74,12 +75,12 @@ significant_relationships.sort(key=lambda x: abs(x[2]), reverse=True)
 df_significant = pd.DataFrame(significant_relationships, columns=["Variable 1", "Variable 2", "Correlation", "p-value"])
 
 # Save the DataFrame to a CSV file
-df_significant.to_csv(date+'significant_relationships.csv', index=False)
+df_significant.to_csv(date+'significant_relationships_dropped.csv', index=False)
 
 # Print the significant relationships in order of magnitude
-for relationship in significant_relationships:
-    col1, col2, corr, p_value = relationship
-    print(f"{col1} - {col2}: Correlation = {corr:.2f}, p-value = {p_value:.4f}")
+#for relationship in significant_relationships:
+#    col1, col2, corr, p_value = relationship
+#    print(f"{col1} - {col2}: Correlation = {corr:.2f}, p-value = {p_value:.4f}")
 
 # Create a mask for statistically significant correlations
 mask = p_values >= alpha
@@ -90,4 +91,4 @@ sns.set(font_scale=1)
 sns.heatmap(correlation_matrix, annot=False, mask=mask, cmap='coolwarm', linewidths=0.5, fmt=".2f")
 
 plt.title('Cross-Correlation Heatmap with Correlation Coefficients')
-plt.savefig(date+'heatmap.png')  # Save the figure to a file
+plt.savefig(date+'heatmap_dropped.png')  # Save the figure to a file
