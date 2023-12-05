@@ -10,10 +10,10 @@ from matplotlib import pyplot as plt
 #featCols = 19
 
 #needs to work
-date = '2023_9_27_'
+date = '2023_12_5_'
 csv_file_path = date+'targeted_eval.csv'
 #num feature columns
-featCols = 26 # this does not include wall number or points, just features
+featCols = 69 # this does not include points, just what is after
 
 # Read the CSV file and extract the data
 data = []
