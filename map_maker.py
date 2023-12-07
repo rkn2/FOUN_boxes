@@ -40,6 +40,8 @@ class DataProcessor:
 
         self.image_width = int(max_x - min_x) + 50
         self.image_height = int(max_y - min_y) + 50
+        self.min_y = min_y
+        self.min_x = min_x
 
     # def extract_feature_columns(self):
     #     with open(self.csv_file_path, 'r') as csv_file:
@@ -81,26 +83,24 @@ class DataProcessor:
         }
 
 class ShapeDrawer:
-    def __init__(self, points_df, feature_df, nested_dict, feature_of_interest, image_width, image_height):
-        self.points_df = points_df
-        self.feature_df = feature_df
-        self.nested_dict = nested_dict
+    def __init__(self, feature_of_interest, processor):
+        self.processor = processor
         self.feature_of_interest = feature_of_interest
-        self.image = Image.new('RGB', (image_width, image_height), 'white')
+        self.image = Image.new('RGB', (processor.image_width, processor.image_height), 'white')
         self.draw = ImageDraw.Draw(self.image)
 
     def draw_discrete_shapes(self):
         colors = []
         labels = []
 
-        for index, row in self.points_df.iterrows():
-            coordinates = [(float(coord.split(',')[0]), float(coord.split(',')[1])) for coord in row[1:] if pd.notna(coord)]
+        for index, row in self.processor.points_df.iterrows():
+            coordinates = [(float(coord.split(',')[0])-self.processor.min_x, float(coord.split(',')[1])-self.processor.min_y) for coord in row[1:] if pd.notna(coord)]
             if coordinates:
                 shape_name = row['Unnamed: 0']
-                feature_value = self.feature_df.query("`Unnamed: 0` == @shape_name")[self.feature_of_interest].values[0]
-                color = self.nested_dict['discrete'][self.feature_of_interest][str(int(feature_value))]['color']
+                feature_value = self.processor.feature_df.query("`Unnamed: 0` == @shape_name")[self.feature_of_interest].values[0]
+                color = self.processor.nested_dict['discrete'][self.feature_of_interest][str(int(feature_value))]['color']
                 if color not in colors:
-                    label = self.nested_dict['discrete'][self.feature_of_interest][str(int(feature_value))]['legend']
+                    label = self.processor.nested_dict['discrete'][self.feature_of_interest][str(int(feature_value))]['legend']
                     colors.append(color)
                     labels.append(label)
 
@@ -131,14 +131,14 @@ class ShapeDrawer:
         self.draw.text(title_position, title_text, fill='black')
 
     def draw_continuous_shapes(self):
-        for index, row in self.points_df.iterrows():
-            coordinates = [(float(coord.split(',')[0]), float(coord.split(',')[1])) for coord in row[1:] if pd.notna(coord)]
+        for index, row in self.processor.points_df.iterrows():
+            coordinates = [(float(coord.split(',')[0])-self.processor.min_x, float(coord.split(',')[1])-self.processor.min_y) for coord in row[1:] if pd.notna(coord)]
             if coordinates:
                 shape_name = row['Unnamed: 0']
-                feature_value = self.feature_df.query("`Unnamed: 0` == @shape_name")[self.feature_of_interest].values[0]
-                colorscale = self.nested_dict['continuous'][self.feature_of_interest].capitalize()
-                min_value = min(self.feature_df[self.feature_of_interest])
-                max_value = max(self.feature_df[self.feature_of_interest])
+                feature_value = self.processor.feature_df.query("`Unnamed: 0` == @shape_name")[self.feature_of_interest].values[0]
+                colorscale = self.processor.nested_dict['continuous'][self.feature_of_interest].capitalize()
+                min_value = min(self.processor.feature_df[self.feature_of_interest])
+                max_value = max(self.processor.feature_df[self.feature_of_interest])
                 normalized_value = (feature_value - min_value) / (max_value - min_value)
                 grayscale_value = int(255 * normalized_value)
                 color = (grayscale_value, grayscale_value, grayscale_value)
@@ -190,14 +190,12 @@ def main():
     for feature_of_interest in feature_of_interests:
         if feature_of_interest in processor.nested_dict['discrete']:
             print(f"{feature_of_interest} is a discrete feature.")
-            drawer = ShapeDrawer(processor.points_df, processor.feature_df, processor.nested_dict, feature_of_interest,
-                                 processor.image_width, processor.image_height)
+            drawer = ShapeDrawer(feature_of_interest, processor)
             drawer.draw_discrete_shapes()
             drawer.save_image(f"{feature_of_interest}.png")
         elif feature_of_interest in processor.nested_dict['continuous']:
             print(f"{feature_of_interest} is a continuous feature.")
-            drawer = ShapeDrawer(processor.points_df, processor.feature_df, processor.nested_dict, feature_of_interest,
-                                 processor.image_width, processor.image_height)
+            drawer = ShapeDrawer(feature_of_interest, processor)
             drawer.draw_continuous_shapes()
             drawer.save_image(f"{feature_of_interest}.png")
         else:

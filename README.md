@@ -40,12 +40,6 @@ run boundingBoxes2.py in the same place as your .dxf.
 copy the output_blocks.csv and add feature columns to it. save that as output_blocks_cont.csv
 make sure that the first row is filled in, has a decimal if it needs to be continuous, and has a whole number if its categorical
 
-
 # Extracting the names, points, and creating images from feature vectors
-run readCSV8.py in the same place as "output_blocks_cont.csv"
-you hard coded the number of feature columns so if you add another feature update that variable at the top ofthe code i readCSV.
-FYI: num features does not include wall name or any of the geometry points
-
-when cleaning CSV make sure that columns are properly formatted as number if they are a float and as general if they are an int
-one example is wall rank should be a number so it gets put into the system as a scaled quantity and not just 0,1,2,3,4.
-
+run mapmaker.py in the same place as "output_blocks_cont.csv"
+to install reqs do: pip install -r requirements.txt
