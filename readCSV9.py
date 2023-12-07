@@ -4,6 +4,7 @@ from matplotlib import pyplot as plt
 import csv
 import pandas as pd
 import numpy as np
+from matplotlib.colors import Normalize
 
 def extract_data_from_csv(csv_file_path):
     with open(csv_file_path, 'r') as csv_file:
@@ -68,8 +69,7 @@ def extract_feature_columns(csv_file_path):
 
 # Example usage: feature_columns = extract_feature_columns(csv_file_path)
 
-
-def create_nested_dict(disc_file_path, cont_file_path, bin_file_path):
+def create_nested_dict(disc_file_path, cont_file_path):
     # Read and process the discrete data
     df_disc = pd.read_csv(disc_file_path, sep=',')
     disc_feat = {}
@@ -97,39 +97,20 @@ def create_nested_dict(disc_file_path, cont_file_path, bin_file_path):
         colorscale = row['colorscale']
         continuous_feat[feature_name] = colorscale
 
-    # Read and process the binary data
-    df_bin = pd.read_csv(bin_file_path, sep='\t', header=0, index_col=0)
-    binary_dict = {}
-    # Iterate through the rows and populate the dictionary
-    for index, row in df_bin.iterrows():
-        feature_name = index
-        values = {}
-        for i in range(len(row)):
-            value = int(row.index[i])
-            color = row[i]
-            values[value] = color
-        binary_dict[feature_name] = values
-
     # Combine all dictionaries into a nested dictionary
     nested_dict = {
         "discrete": disc_feat,
-        "continuous": continuous_feat,
-        "binary": binary_dict
+        "continuous": continuous_feat
     }
 
     return nested_dict
-# Example usage:
-# disc_file_path = 'disc_file.csv'  # Replace with the actual path to your discrete CSV file
-# cont_file_path = 'cont_file.csv'    # Replace with the actual path to your continuous CSV file
-# bin_file_path = 'bin_file.csv'      # Replace with the actual path to your binary CSV file
-# nested_dict = create_nested_dict(disc_file_path, cont_file_path, bin_file_path)
 
 def parse_coordinates(row):
     points = row.split(', ')
     coordinates = [(float(points[i]), float(points[i + 1])) for i in range(0, len(points), 2)]
     return coordinates
 
-def draw_discrete_shapes(points_df, feature_df, nested_dict, feature_of_interest, output_image_path):
+def draw_discrete_shapes(points_df, feature_df, nested_dict, feature_of_interest):
     image = Image.new('RGB', (image_width, image_height), 'white')
     draw = ImageDraw.Draw(image)
     colors = []
@@ -184,9 +165,80 @@ def draw_discrete_shapes(points_df, feature_df, nested_dict, feature_of_interest
     draw.text(title_position, title_text, fill='black')
 
     # Save the combined image to the specified output path
+    output_image_path = str(feature_of_interest) + '.png'
     image.save(output_image_path)
     print(f"Image with legend and title saved to {output_image_path}")
     image.show()
+
+def draw_continuous_shapes(points_df, feature_df, nested_dict, feature_of_interest):
+    image = Image.new('RGB', (image_width, image_height), 'white')
+    draw = ImageDraw.Draw(image)
+
+    # Create a blank matplotlib figure and axis
+    fig, ax = plt.subplots()
+
+    # Loop through the DataFrame and draw polygons
+    for index, row in points_df.iterrows():
+        coordinates = [(float(coord.split(',')[0]), float(coord.split(',')[1])) for coord in row[1:] if pd.notna(coord)]
+
+        # Now, that I have my feature value, I want to look in my dictionary to see what color I should be using
+        colorscale = nested_dict['continuous'][feature_of_interest].capitalize()
+
+        # What is the min feature value
+        min_value = min(feature_df[feature_of_interest])
+        # What is the max feature value
+        max_value = max(feature_df[feature_of_interest])
+
+        if coordinates:
+            # Get the feature value for this shape
+            shape_name = row['Unnamed: 0']
+            # Get the feature value for this shape and feature_of_interest
+            feature_value = feature_df.query("`Unnamed: 0` == @shape_name")[feature_of_interest].values[0]
+            #print(feature_value)
+
+            normalized_value = (feature_value - min_value) / (max_value - min_value)
+            grayscale_value = int(255 * normalized_value)
+            color = (grayscale_value, grayscale_value, grayscale_value)
+
+            draw.polygon(coordinates, outline='black', fill=color)
+            # Calculate the center of the rectangle
+            center_x = sum(p[0] for p in coordinates) // len(coordinates)
+            center_y = sum(p[1] for p in coordinates) // len(coordinates)
+            # Draw the name as text in the center
+            draw.text((center_x, center_y), shape_name, fill='black')
+
+
+    # Create a colorbar for continuous values
+    colorbar_x = 0
+    colorbar_y = 0
+
+    # Create a smooth gradient colorbar using matplotlib
+    fig, ax = plt.subplots(figsize=(1, 6))
+    cmap = plt.get_cmap(colorscale)
+    norm = Normalize(vmin=min_value, vmax=max_value)
+    cb = plt.colorbar(plt.cm.ScalarMappable(norm=norm, cmap=cmap), cax=ax)
+    cb.ax.set_title(feature_of_interest, fontsize=12)
+    cb.ax.tick_params(labelsize=10)
+
+    # Set a solid background color for the colorbar
+    cb.outline.set_edgecolor('black')  # Border color
+    cb.outline.set_linewidth(1)  # Border width
+    cb.ax.xaxis.set_tick_params(color='black', width=1)  # Tick color and width
+    cb.ax.yaxis.set_tick_params(color='black', width=1)  # Tick color and width
+
+    # Save the colorbar as a separate image
+    colorbar_image_path = 'colorbar.png'
+    fig.savefig(colorbar_image_path, bbox_inches='tight', transparent=True, dpi=100)
+
+    # Load the colorbar image and paste it onto the main image
+    colorbar_image = Image.open(colorbar_image_path)
+    image.paste(colorbar_image, (colorbar_x, colorbar_y))
+    output_image_path = str(feature_of_interest) + '.png'
+    # Save the combined image to the specified output path
+    image.save(output_image_path)
+    print(f"Image with legend and title saved to {output_image_path}")
+    image.show()
+
 
 # Example usage:
 date = '2023_12_5_'
@@ -194,135 +246,21 @@ csv_file_path = date+'targeted_eval.csv'
 points_df, feature_df= extract_data_from_csv(csv_file_path)
 image_width, image_height = calculate_image_size(points_df)
 feature_columns = extract_feature_columns(csv_file_path)
-feature_of_interest = 'Sill 1'
-output_image_path = 'output2.png'
+#feature_of_interest = 'Sill 1' # discrete
+#feature_of_interest = 'Coat WGT SCR' # continuous
+feature_of_interest = '1960_treat_2' # binary
+
 
 disc_file_path = 'disc_file.csv'  # Replace with the actual path to your discrete CSV file
 cont_file_path = 'cont_file.csv'    # Replace with the actual path to your continuous CSV file
-bin_file_path = 'bin_file.csv'      # Replace with the actual path to your binary CSV file
-nested_dict = create_nested_dict(disc_file_path, cont_file_path, bin_file_path)
+nested_dict = create_nested_dict(disc_file_path, cont_file_path)
 
 if feature_of_interest in nested_dict['discrete']:
     print(f"{feature_of_interest} is a discrete feature.")
-    draw_discrete_shapes(points_df, feature_df, nested_dict, feature_of_interest, output_image_path)
+    draw_discrete_shapes(points_df, feature_df, nested_dict, feature_of_interest)
 elif feature_of_interest in nested_dict['continuous']:
     print(f"{feature_of_interest} is a continuous feature.")
-elif feature_of_interest in nested_dict['binary']:
-    print(f"{feature_of_interest} is a binary feature.")
+    draw_continuous_shapes(points_df, feature_df, nested_dict, feature_of_interest)
 else:
     print(f"{feature_of_interest} is not found in any of the dictionaries.")
 
-# ^^ works
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# __ older stuff __
-
-# Choose a font for labeling
-font = ImageFont.load_default()  # You can choose an appropriate font
-
-# Create images for each feature column
-for feature_index, feature_name in enumerate(header[-featCols:], start=len(data[0][0]) + 1): #HER
-
-    if feature_index in discrete_features:
-        # Draw shapes for discrete values using extracted points and features
-        count=0
-        for points, feature in data:
-            fill_color = color_mapping.get(feature[feature_index - len(data[0][0]) - 1], 'white')  # Get color based on feature value
-            adjusted_points = [(int(p[0] - min_x + 50), int(p[1] - min_y + 50)) for p in points]  # Adjust points based on image dimensions
-            draw.polygon(adjusted_points, outline='black', fill=fill_color)
-
-            # Calculate the center of the rectangle
-            center_x = sum(p[0] for p in adjusted_points) // len(adjusted_points)
-            center_y = sum(p[1] for p in adjusted_points) // len(adjusted_points)
-
-            # Draw the name as text in the center
-            text_x = center_x - (len(feature) * 2)  # Adjust text position based on text length
-            text_y = center_y - 10  # Adjust text position vertically
-            draw.text((text_x, text_y), names[count], font=font, fill='black')
-            count = count + 1
-
-        # Create a legend for discrete values
-        for i, label in enumerate(['0', '1', '2', '3', '4', '5']):
-            legend_x = image_width - 150
-            legend_y = 50 + i * 50
-            draw.rectangle([legend_x, legend_y, legend_x + 30, legend_y + 30], outline='black',
-                           fill=color_mapping.get(int(label), 'black'))
-            draw.text((legend_x + 40, legend_y), label, font=font, fill='black')
-    elif feature_index in continuous_features:
-        # Create a grayscale colorbar for continuous values
-        min_value = min(float(feature[feature_index - len(data[0][0]) - 1]) for _, feature in data if isinstance(feature[feature_index - len(data[0][0]) - 1], (int, float)))
-        max_value = max(float(feature[feature_index - len(data[0][0]) - 1]) for _, feature in data if isinstance(feature[feature_index - len(data[0][0]) - 1], (int, float)))
-        color_range = max_value - min_value
-        count = 0
-        for points, feature in data:
-            # Check if the value is not an empty string and can be converted to a float
-            value_to_convert = feature[feature_index - len(data[0][0]) - 1]
-            if value_to_convert != '' and value_to_convert != '-':
-                value_as_float = float(value_to_convert)
-            else:
-                value_as_float = 0.0  # Or any other default value you prefer
-
-            normalized_value = (value_as_float - min_value) / color_range
-
-            grayscale_value = int(255 * normalized_value)
-            fill_color = (grayscale_value, grayscale_value, grayscale_value)
-            adjusted_points = [(int(p[0] - min_x + 50), int(p[1] - min_y + 50)) for p in points]  # Adjust points based on image dimensions
-            draw.polygon(adjusted_points, outline='black', fill=fill_color)
-
-            # Calculate the center of the rectangle
-            center_x = sum(p[0] for p in adjusted_points) // len(adjusted_points)
-            center_y = sum(p[1] for p in adjusted_points) // len(adjusted_points)
-
-            # Draw the name as text in the center
-            text_x = center_x - (len(feature) * 2)  # Adjust text position based on text length
-            text_y = center_y - 10  # Adjust text position vertically
-            draw.text((text_x, text_y), names[count], font=font, fill='red')
-            count = count + 1
-
-            # Create a grayscale colorbar for continuous values
-            colorbar_x = image_width - 200
-            colorbar_y = 100
-            colorbar_width = 25
-            colorbar_height = 400
-
-            # Create a smooth gradient colorbar using matplotlib
-            fig, ax = plt.subplots(figsize=(1, 6))
-            cmap = plt.get_cmap('gray')
-            norm = plt.Normalize(min_value, max_value)
-            cb = plt.colorbar(plt.cm.ScalarMappable(norm=norm, cmap=cmap), cax=ax)
-            cb.ax.set_title(feature_name, fontsize=12)
-            cb.ax.tick_params(labelsize=10)
-
-            # Set a solid background color for the colorbar
-            cb.outline.set_edgecolor('black')  # Border color
-            cb.outline.set_linewidth(1)  # Border width
-            cb.ax.xaxis.set_tick_params(color='black', width=1)  # Tick color and width
-            cb.ax.yaxis.set_tick_params(color='black', width=1)  # Tick color and width
-            # Customize colorbar labels with min_value and max_value
-            cb.set_ticks([min_value, max_value])
-            cb.set_ticklabels([str(min_value), str(max_value)])
-
-            # Save the colorbar as an image
-            colorbar_image_path = f'colorbar_{feature_name}.png'
-            plt.savefig(colorbar_image_path, bbox_inches='tight', pad_inches=0, transparent=False, dpi=300)
-            plt.close()
-
-            # Load and paste the colorbar onto the main image
-            colorbar_image = Image.open(colorbar_image_path)
-            colorbar_image = colorbar_image.resize((80, 400))
-            image.paste(colorbar_image, (colorbar_x, colorbar_y))
-
-    # Save the generated image
-    image.save(output_image_path)
