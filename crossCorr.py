@@ -21,7 +21,7 @@ columns_to_drop = list(range(0, 10))  # This creates a list of column indices fr
 df = df.drop(columns=df.columns[columns_to_drop])
 
 # Use dropna() to remove rows with missing values
-# df_cleaned = df.dropna() # takes away too many
+df = df.dropna()
 
 columns_to_drop = ['Coat WGT SCR', 'Coat 4 WGT SCR', 'Wall NRM SCR ', 'Wall WGT SCR', 'Total Scr', 'Wall Rank']
 #columns_to_drop = []
@@ -91,4 +91,5 @@ sns.set(font_scale=1)
 sns.heatmap(correlation_matrix, annot=False, mask=mask, cmap='coolwarm', linewidths=0.5, fmt=".2f")
 
 plt.title('Cross-Correlation Heatmap with Correlation Coefficients')
-plt.savefig(date+'heatmap_dropped.png')  # Save the figure to a file
+#plt.savefig(date+'heatmap_dropped.png')  # Save the figure to a file
+plt.show()
