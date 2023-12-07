@@ -1,95 +1,73 @@
-# pip install pandas-profiling
-# pip install pandas
-# pip install stats
-# pip install matplotlib
-
-import scipy.stats as stats  # Import the scipy.stats library
 import pandas as pd
+import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
-from pandas_profiling import ProfileReport
-
-date = '2023_12_5_'
-file_path = date+'targeted_eval.csv'
-
-# Read the CSV file into a DataFrame
-df = pd.read_csv(file_path)
-
-columns_to_drop = list(range(0, 10))  # This creates a list of column indices from 1 to 9
-
-# Use the .drop() method to remove the specified columns
-df = df.drop(columns=df.columns[columns_to_drop])
-
-# Use dropna() to remove rows with missing values
-df = df.dropna()
-
-columns_to_drop = ['Coat WGT SCR', 'Coat 4 WGT SCR', 'Wall NRM SCR ', 'Wall WGT SCR', 'Total Scr', 'Wall Rank']
-#columns_to_drop = []
-
-# Use the .drop() method to remove the specified columns
-#df = df.drop(columns=columns_to_drop)
-
-# Check if each column exists before dropping it
-for column in columns_to_drop:
-    if column in df.columns:
-        df = df.drop(columns=column)
-
-# do reporting if desired
-#prof = ProfileReport(df)
-#prof.to_file(output_file='output_raw.html')
-
-correlation_matrix = df.corr() #pearson correlation
-
-# Define a significance level (e.g., 0.05, which is common)
-alpha = 0.05
-
 from scipy.stats import pearsonr
-import numpy as np
 
-# Calculate p-values for Pearson correlation
-p_values = np.zeros((len(df.columns), len(df.columns)))
+def read_and_clean_data(file_path, drop_columns=None):
+    # Read the CSV file into a DataFrame
+    df = pd.read_csv(file_path)
 
-# Define your significance level (alpha)
-alpha = 0.05
+    if drop_columns is not None:
+        # Drop specified columns by index
+        df = df.drop(columns=df.columns[drop_columns])
 
-# Create a list to store the significant relationships
-significant_relationships = []
+    # Remove rows with missing values
+    df = df.dropna()
 
-# Iterate through each pair of columns
-for i, col1 in enumerate(df.columns):
-    for j, col2 in enumerate(df.columns):
-        if i < j:  # Consider only the upper triangular part
-            # Check for NaNs or Infs in the columns
-            if df[col1].isnull().any() or df[col2].isnull().any() or np.isinf(df[col1]).any() or np.isinf(df[col2]).any():
-                p_values[i, j] = np.nan  # Set p-value to NaN for this pair
-            else:
-                corr, p_value = pearsonr(df[col1], df[col2])
-                p_values[i, j] = p_value
-                if p_value < alpha:
-                    significant_relationships.append((col1, col2, corr, p_value))
+    return df
 
-# Sort the significant relationships by the magnitude of correlation
-significant_relationships.sort(key=lambda x: abs(x[2]), reverse=True)
+def calculate_correlations(df, alpha=0.05):
+    # Calculate Pearson correlations and p-values
+    correlation_matrix = df.corr()
+    p_values = np.zeros((len(df.columns), len(df.columns)))
 
-# Create a DataFrame from the significant relationships
-df_significant = pd.DataFrame(significant_relationships, columns=["Variable 1", "Variable 2", "Correlation", "p-value"])
+    significant_relationships = []
 
-# Save the DataFrame to a CSV file
-df_significant.to_csv(date+'significant_relationships_dropped.csv', index=False)
+    for i, col1 in enumerate(df.columns):
+        for j, col2 in enumerate(df.columns):
+            if i < j:
+                if df[col1].isnull().any() or df[col2].isnull().any() or np.isinf(df[col1]).any() or np.isinf(df[col2]).any():
+                    p_values[i, j] = np.nan
+                else:
+                    corr, p_value = pearsonr(df[col1], df[col2])
+                    p_values[i, j] = p_value
+                    if p_value < alpha:
+                        significant_relationships.append((col1, col2, corr, p_value))
 
-# Print the significant relationships in order of magnitude
-#for relationship in significant_relationships:
-#    col1, col2, corr, p_value = relationship
-#    print(f"{col1} - {col2}: Correlation = {corr:.2f}, p-value = {p_value:.4f}")
+    significant_relationships.sort(key=lambda x: abs(x[2]), reverse=True)
 
-# Create a mask for statistically significant correlations
-mask = p_values >= alpha
+    df_significant = pd.DataFrame(significant_relationships, columns=["Variable 1", "Variable 2", "Correlation", "p-value"])
 
-# Create a heatmap with correlation coefficients
-plt.figure(figsize=(20, 16))
-sns.set(font_scale=1)
-sns.heatmap(correlation_matrix, annot=False, mask=mask, cmap='coolwarm', linewidths=0.5, fmt=".2f")
+    return correlation_matrix, p_values, df_significant
 
-plt.title('Cross-Correlation Heatmap with Correlation Coefficients')
-#plt.savefig(date+'heatmap_dropped.png')  # Save the figure to a file
-plt.show()
+def plot_correlation_heatmap(correlation_matrix, p_values, alpha=0.05):
+    mask = p_values >= alpha
+
+    plt.figure(figsize=(20, 16))
+    sns.set(font_scale=1)
+    sns.heatmap(correlation_matrix, annot=False, mask=mask, cmap='coolwarm', linewidths=0.5, fmt=".2f")
+    plt.title('Cross-Correlation Heatmap with Correlation Coefficients')
+    plt.show()
+
+def main():
+    date = '2023_12_5_'
+    file_path = date + 'targeted_eval.csv'
+
+    # Define columns to drop by index
+    columns_to_drop = list(range(0, 10))
+
+    # Read and clean the data
+    df = read_and_clean_data(file_path, drop_columns=columns_to_drop)
+
+    # Calculate correlations and p-values
+    correlation_matrix, p_values, df_significant = calculate_correlations(df)
+
+    # Plot the correlation heatmap
+    plot_correlation_heatmap(correlation_matrix, p_values)
+
+    # Save significant relationships to a CSV file
+    df_significant.to_csv(date + 'significant_relationships_dropped.csv', index=False)
+
+if __name__ == "__main__":
+    main()
