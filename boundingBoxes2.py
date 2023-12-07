@@ -6,8 +6,8 @@ import ezdxf  # Make sure to install the ezdxf library using "pip install ezdxf"
 
 # Define the path to your DWG file
 #input_dwg = "WALL BLOCK1_v2.dxf" #original that works
-input_dwg = "WALL BLOCK-UPDATE-25.09.dxf"
-output_csv = "2023_9_27_output_blocks.csv"
+input_dwg = "2023_12_7_wallBlocks.dxf"
+output_csv = "2023_12_7_output_blocks.csv"
 
 # Load the DWG file
 doc = ezdxf.readfile(input_dwg)  # Read the DWG file using ezdxf

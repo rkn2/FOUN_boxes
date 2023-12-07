@@ -63,7 +63,7 @@ def extract_feature_columns(csv_file_path):
         header = next(csv_reader)  # Get the header row
 
         # Extract feature columns starting from the 10th column (1-based index)
-        feature_columns = header[10:]
+        feature_columns = header[10:] # hardcoded to start at 10th column
 
     return feature_columns
 

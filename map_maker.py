@@ -41,11 +41,11 @@ class DataProcessor:
         self.image_width = int(max_x - min_x) + 50
         self.image_height = int(max_y - min_y) + 50
 
-    def extract_feature_columns(self):
-        with open(self.csv_file_path, 'r') as csv_file:
-            csv_reader = csv.reader(csv_file)
-            header = next(csv_reader)
-            self.feature_columns = header[10:]
+    # def extract_feature_columns(self):
+    #     with open(self.csv_file_path, 'r') as csv_file:
+    #         csv_reader = csv.reader(csv_file)
+    #         header = next(csv_reader)
+    #         self.feature_columns = header[10:]
 
     def create_nested_dict(self, disc_file_path, cont_file_path):
         # Process the discrete data
@@ -177,28 +177,32 @@ class ShapeDrawer:
 
 def main():
     date = '2023_12_5_'
-    csv_file_path = date+'targeted_eval.csv'
+    csv_file_path = date + 'targeted_eval.csv'
     disc_file_path = 'disc_file.csv'  # Replace with the actual path to your discrete CSV file
     cont_file_path = 'cont_file.csv'  # Replace with the actual path to your continuous CSV file
-    feature_of_interest = 'Sill 1'  # Change to the desired feature
+    feature_of_interests = ['Sill 1', 'Coat WGT SCR']  # Change to the desired feature list
     processor = DataProcessor(csv_file_path)
     processor.extract_data_from_csv()
     processor.calculate_image_size()
-    processor.extract_feature_columns()
+    #processor.extract_feature_columns()
     processor.create_nested_dict(disc_file_path, cont_file_path)
 
-    if feature_of_interest in processor.nested_dict['discrete']:
-        print(f"{feature_of_interest} is a discrete feature.")
-        drawer = ShapeDrawer(processor.points_df, processor.feature_df, processor.nested_dict, feature_of_interest, processor.image_width, processor.image_height)
-        drawer.draw_discrete_shapes()
-        drawer.save_image(f"{feature_of_interest}.png")
-    elif feature_of_interest in processor.nested_dict['continuous']:
-        print(f"{feature_of_interest} is a continuous feature.")
-        drawer = ShapeDrawer(processor.points_df, processor.feature_df, processor.nested_dict, feature_of_interest, processor.image_width, processor.image_height)
-        drawer.draw_continuous_shapes()
-        drawer.save_image(f"{feature_of_interest}.png")
-    else:
-        print(f"{feature_of_interest} is not found in any of the dictionaries.")
+    for feature_of_interest in feature_of_interests:
+        if feature_of_interest in processor.nested_dict['discrete']:
+            print(f"{feature_of_interest} is a discrete feature.")
+            drawer = ShapeDrawer(processor.points_df, processor.feature_df, processor.nested_dict, feature_of_interest,
+                                 processor.image_width, processor.image_height)
+            drawer.draw_discrete_shapes()
+            drawer.save_image(f"{feature_of_interest}.png")
+        elif feature_of_interest in processor.nested_dict['continuous']:
+            print(f"{feature_of_interest} is a continuous feature.")
+            drawer = ShapeDrawer(processor.points_df, processor.feature_df, processor.nested_dict, feature_of_interest,
+                                 processor.image_width, processor.image_height)
+            drawer.draw_continuous_shapes()
+            drawer.save_image(f"{feature_of_interest}.png")
+        else:
+            print(f"{feature_of_interest} is not found in any of the dictionaries.")
+
 
 if __name__ == "__main__":
     main()
