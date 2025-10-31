@@ -34,7 +34,7 @@ There are two primary workflows in this project:
 
 -   `code_for_Mina_FOUN.ipynb`: A Jupyter Notebook for more in-depth data analysis, including correlation matrices, PCA, and feature importance.
 
-##Setup and Installation
+## Setup and Installation
 
 ----------------------
 
@@ -120,7 +120,7 @@ python map_maker.py
 
 ```
 
-##Workflow 2: Data Analysis
+## Workflow 2: Data Analysis
 
 -------------------------
 
