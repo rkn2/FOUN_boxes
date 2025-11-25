@@ -42,7 +42,7 @@ When you open the notebooks in Colab, you will need to upload the data file:
 ### **Tutorial 2: Decision Making & Budgeting**
 **What you'll do:**
 -   **Matrix Builder:** Interactively build an intervention priority matrix. Select problems and solutions from dropdowns and assign scores.
--   **The Budget Game:** You have $10,000. Use sliders to allocate repairs (Fill Foundation, Drip Edge, etc.). Try to maximize your preservation score without going over budget!
+-   **The Budget Game:** You set the budget! Define your total funds and unit costs, then use sliders to allocate repairs. Try to maximize your preservation score without going over your limit.
 
 ---
 
