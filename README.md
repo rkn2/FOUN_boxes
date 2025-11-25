@@ -1,179 +1,90 @@
-# Architectural Data Processing and Visualization Toolkit
+# Data-Driven Heritage Preservation: Interactive Educational Suite
 
-=======================================================
+## Overview
 
-This project provides a suite of tools for processing, analyzing, and visualizing architectural data, primarily from CAD files. It includes two main workflows: one for converting `.dxf` files into visual representations based on feature data, and another for performing statistical analysis on the extracted data.
+This repository contains **interactive educational materials** developed for the NCPTT grant: *"Data-Driven Heritage Preservation: Leveraging Machine Learning for Informed Adobe Conservation Strategies"*.
 
-## Workflows
+**Designed for All Skill Levels:**
+These notebooks use a "Scaffolded Learning" approach:
+1.  **No-Code:** Use interactive sliders and buttons to explore concepts.
+2.  **Low-Code:** Read explanations of how the logic works.
+3.  **Pro-Code:** Inspect the underlying Python code to learn implementation.
 
----------
+---
 
-There are two primary workflows in this project:
+## 🚀 Getting Started
 
-1\.  **CAD to Image Visualization**: This workflow takes a `.dxf` CAD file, extracts geometric data, associates it with feature data, and generates images that visualize these features.
+### 1. Install Requirements
+You need Python and Jupyter. Run this command to install the necessary libraries, including the interactive widgets:
 
-2\.  **Data Analysis**: This workflow uses Python scripts and a Jupyter Notebook to perform statistical analysis, such as cross-correlation, principal component analysis (PCA), and feature importance, on the architectural data.
-
-##File Descriptions
-
------------------
-
--   `README.md`: This documentation.
-
--   `boundingBoxes2.py`: A Python script that reads a `.dxf` file and extracts bounding box information for blocks and polylines, saving it to a `.csv` file.
-
--   `map_maker.py`: A Python script that generates images from the feature vector file (`output_blocks_cont.csv`), color-coding shapes based on discrete or continuous features.
-
--   `crossCorr.py`: A Python script for performing cross-correlation analysis on the feature data.
-
--   `hist_sig.py`: A Python script to create histograms of significant features identified by the `crossCorr.py` script.
-
--   `plot_blocks.py`: A utility script for plotting the shapes from the `output_blocks_cont.csv` file for a quick visual check.
-
--   `feature_type_dictionary.py`: A script to generate a nested dictionary of feature types from CSV files.
-
--   `code_for_Mina_FOUN.ipynb`: A Jupyter Notebook for more in-depth data analysis, including correlation matrices, PCA, and feature importance.
-
-## Setup and Installation
-
-----------------------
-
-To use these scripts, you need to have Python installed, along with several libraries. You can install the required libraries using `pip`:
-
+```bash
+pip install pandas numpy seaborn matplotlib scikit-learn factor-analyzer ipywidgets
 ```
 
-pip install -r requirements.txt
+### 2. Generate Data
+To protect the privacy of the Fort Union site, we use a synthetic data generator. Run this once:
 
+```bash
+python3 generate_synthetic_data.py
 ```
 
-The `requirements.txt` file should contain:
+### 3. Launch the Tutorials
+Start Jupyter Lab or Notebook:
 
+```bash
+jupyter notebook
 ```
 
-dash
+---
 
-factor_analyzer
+## 📚 The Tutorials
 
-ezdxf
+### **Tutorial 1: Interactive Diagnostics**
+📓 `grant_methodology_demo.ipynb`
 
-shapely
+**What you'll do:**
+-   **Data Explorer (No-Code):** Use a dropdown menu to visualize different damage types.
+-   **Factor Analysis (Low-Code):** Use a slider to group damage types into "Latent Vulnerabilities." See the heatmap update in real-time.
+-   **Machine Learning (Low-Code):** Tune a Random Forest using sliders (Number of Trees, Depth) to see which features drive degradation.
 
-matplotlib
+### **Tutorial 2: Decision Making & Budgeting**
+📓 `intervention_matrix_notebook.ipynb`
 
-pandas
+**What you'll do:**
+-   **Matrix Builder:** Interactively build an intervention priority matrix. Select problems and solutions from dropdowns and assign scores.
+-   **The Budget Game:** You have $10,000. Use sliders to allocate repairs (Fill Foundation, Drip Edge, etc.). Try to maximize your preservation score without going over budget!
 
-seaborn
+---
 
-scipy
-
-Pillow
-
-```
-
-## Workflow 1: From CAD to Image Visualization
-
--------------------------------------------
-
-This workflow converts a `.dxf` file into images that visualize specific features.
-
-### Step 1: Create the CAD File (`.dxf`)
-
-1\.  **Open AutoCAD** and start a new drawing.
-
-2\.  **Set Up Layers** for your wall sections.
-
-3\.  **Draw Closed Polylines** for each wall section using the "Polyline" tool. Ensure each polyline is a closed shape.
-
-4\.  **Create Blocks** from each closed polyline. Use the `BLOCK` command, specify a base point, and give each block a unique, descriptive name (e.g., "Wall_5701").
-
-5\.  **Clean the Model** by deleting everything except the blocks and polylines.
-
-6\.  **Save** the file in `.dxf` format.
-
-### Step 2: Extract Bounding Boxes to CSV
-
-Run the `boundingBoxes2.py` script in the same directory as your `.dxf` file. This script will read the `.dxf` file and create a CSV file named `output_blocks.csv` containing the block names and their bounding box coordinates.
+## 📁 Repository Structure
 
 ```
-
-python boundingBoxes2.py
-
+FOUN_boxes/
+├── README.md                           # This guide
+├── generate_synthetic_data.py          # Creates privacy-preserving dataset
+├── synthetic_adobe_data.csv            # The data (generated by script above)
+├── grant_methodology_demo.ipynb        # Tutorial 1 (Diagnostics)
+├── intervention_matrix_notebook.ipynb  # Tutorial 2 (Decisions)
+├── generate_tex_figures.py             # Script for publication figures
+└── texfigures/                         # Output folder for images
 ```
 
-### Step 3: Create Feature Vector File
+---
 
-1\.  Open the `output_blocks.csv` file.
+## 🎓 For Instructors
 
-2\.  Add new columns for the features you want to visualize.
+**Course Integration:**
+These materials are designed for graduate courses like **AE 597: Diagnostics and Monitoring**.
 
-3\.  Save this new file as `output_blocks_cont.csv`.
+**Learning Objectives:**
+1.  **Conceptual:** Understand Factor Analysis and Random Forests without getting bogged down in syntax.
+2.  **Applied:** Translate statistical findings into preservation decisions.
+3.  **Technical:** (Optional) Learn the Python implementation of these methods.
 
-4\.  Make sure the first row contains the feature names. Use a decimal for continuous features and a whole number for categorical features.
+**Customization:**
+You can modify the `generate_synthetic_data.py` script to simulate different types of heritage structures (e.g., masonry bridges, timber frames) to adapt the tutorials for other domains.
 
-### Step 4: Generate Images from Feature Vectors
+---
 
-Run the `map_maker.py` script in the same directory as `output_blocks_cont.csv`. This script will generate images for each feature, color-coding the shapes based on their feature values.
-
-```
-
-python map_maker.py
-
-```
-
-## Workflow 2: Data Analysis
-
--------------------------
-
-This workflow is for performing statistical analysis on your feature data.
-
-### Step 1: Cross-Correlation Analysis
-
-The `crossCorr.py` script is used to calculate and visualize the cross-correlation between different features.
-
-1\.  Ensure your data is in a `.csv` file (e.g., `2023_12_8_targeted_eval.csv`).
-
-2\.  Modify the `file_path` variable in `crossCorr.py` to point to your data file.
-
-3\.  Run the script:
-
-```
-
-python crossCorr.py
-
-```
-
-This will:
-
--   Generate a heatmap of the correlation matrix and display it.
-
--   Save a CSV file named `*_significant_relationships.csv` listing the feature pairs with statistically significant correlations.
-
-### Step 2: Histogram of Significant Features
-
-The `hist_sig.py` script can be used to visualize the frequency of features that appear in significant correlations. It provides options to view the data with or without treatment-related features.
-
-### Step 3: In-Depth Analysis with Jupyter Notebook
-
-The `code_for_Mina_FOUN.ipynb` notebook provides a more interactive way to analyze your data. It includes:
-
--   **Correlation Matrix Heatmap**: A visual representation of the relationships between features.
-
--   **Principal Component Analysis (PCA)**: A technique to reduce the dimensionality of your data and identify the most important components.
-
--   **Feature Importance**: Using a Random Forest Regressor to determine which features are most predictive of the "Wall Rank".
-
-To use the notebook:
-
-1\.  Open it in a Jupyter environment.
-
-2\.  Ensure your data is in an `.xlsx` file named `OUT-update.xlsx`.
-
-3\.  Run the cells in the notebook to perform the analysis.
-
-## Utility Scripts
-
----------------
-
--   **`plot_blocks.py`**: A simple script to visualize the polygons from the `output_blocks_cont.csv` file. This is useful for a quick check to ensure your geometric data has been extracted correctly.
-
--   **`feature_type_dictionary.py`**: This script helps create a nested dictionary of your feature types (discrete, continuous, binary) from separate CSV files. This can be useful for organizing and managing your feature data programmatically.
+**Author:** Dr. Rebecca Napolitano, Penn State University  
+**Grant:** National Center for Preservation Technology and Training (NCPTT)
