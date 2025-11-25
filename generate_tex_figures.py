@@ -144,7 +144,7 @@ def generate_correlation_heatmap(df, output_path):
 
 def generate_feature_importance(df, output_path):
     """
-    Generate Random Forest feature importance plot.
+    Generate Random Forest feature importance plot with comprehensive metrics.
     
     Educational Notes:
     ------------------
@@ -164,23 +164,88 @@ def generate_feature_importance(df, output_path):
         Preprocessed data with 'Total Scr' as target variable
     output_path : str
         Where to save the figure
+        
+    Returns:
+    --------
+    dict : Dictionary containing all model metrics
     """
+    from sklearn.model_selection import cross_val_score, cross_val_predict
+    from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+    from sklearn.inspection import permutation_importance
+    
     # Separate features (X) and target (y)
     # TEACHING POINT: Never include the target in the feature set (data leakage!)
     X = df.drop(columns=['Total Scr'])
     y = df['Total Scr']
     
-    print(f"Training Random Forest with {X.shape[1]} features...")
+    print(f"Training Random Forest with {X.shape[1]} features on n={len(df)} samples...")
+    print(f"Feature-to-sample ratio: 1:{len(df)/X.shape[1]:.2f}")
     
-    # Train Random Forest
+    # Train Random Forest with hyperparameters as specified in paper
     # n_estimators=100: Use 100 decision trees (more = stable but slower)
     # random_state=42: Reproducible results for teaching/debugging
-    rf = RandomForestRegressor(n_estimators=100, random_state=42)
+    rf = RandomForestRegressor(
+        n_estimators=100, 
+        random_state=42,
+        max_depth=None,  # Unrestricted depth
+        min_samples_split=2,
+        oob_score=True  # Enable out-of-bag scoring
+    )
     rf.fit(X, y)
     
-    # Extract importances
-    importances = rf.feature_importances_
-    indices = np.argsort(importances)[::-1]  # Sort descending
+    # Calculate performance metrics
+    print("\n" + "="*60)
+    print("MODEL PERFORMANCE METRICS")
+    print("="*60)
+    
+    # Out-of-bag error
+    oob_score = rf.oob_score_
+    print(f"Out-of-Bag R² Score: {oob_score:.4f}")
+    
+    # 5-fold cross-validation
+    cv_scores = cross_val_score(rf, X, y, cv=5, scoring='r2')
+    cv_predictions = cross_val_predict(rf, X, y, cv=5)
+    
+    r2_cv = np.mean(cv_scores)
+    r2_cv_std = np.std(cv_scores)
+    rmse_cv = np.sqrt(mean_squared_error(y, cv_predictions))
+    mae_cv = mean_absolute_error(y, cv_predictions)
+    
+    print(f"5-Fold Cross-Validation R²: {r2_cv:.4f} (±{r2_cv_std:.4f})")
+    print(f"Cross-Validation RMSE: {rmse_cv:.4f}")
+    print(f"Cross-Validation MAE: {mae_cv:.4f}")
+    
+    # Training performance (for comparison - may indicate overfitting if much better than CV)
+    y_pred_train = rf.predict(X)
+    r2_train = r2_score(y, y_pred_train)
+    rmse_train = np.sqrt(mean_squared_error(y, y_pred_train))
+    mae_train = mean_absolute_error(y, y_pred_train)
+    
+    print(f"\nTraining Set Performance (reference):")
+    print(f"  R²: {r2_train:.4f}")
+    print(f"  RMSE: {rmse_train:.4f}")
+    print(f"  MAE: {mae_train:.4f}")
+    
+    if r2_train - r2_cv > 0.15:
+        print("  ⚠ Warning: Large train-CV gap suggests potential overfitting")
+    
+    # Extract mean decrease in impurity importances
+    importances_mdi = rf.feature_importances_
+    
+    # Calculate permutation importance with standard errors
+    print("\nCalculating permutation importance (this may take a moment)...")
+    perm_importance = permutation_importance(
+        rf, X, y, 
+        n_repeats=30,  # 30 permutations for stable estimates
+        random_state=42,
+        n_jobs=-1  # Use all CPUs
+    )
+    
+    importances_perm = perm_importance.importances_mean
+    importances_perm_std = perm_importance.importances_std
+    
+    # Sort by mean decrease in impurity for plotting
+    indices = np.argsort(importances_mdi)[::-1]  # Sort descending
     
     # Top 10 features (for readability)
     top_n = 10
@@ -189,7 +254,7 @@ def generate_feature_importance(df, output_path):
     # Create bar plot
     plt.figure(figsize=(12, 6))
     colors = sns.color_palette("viridis", top_n)
-    plt.barh(range(top_n), importances[top_indices], color=colors)
+    plt.barh(range(top_n), importances_mdi[top_indices], color=colors)
     plt.yticks(range(top_n), X.columns[top_indices])
     plt.gca().invert_yaxis()  # Highest importance at top
     
@@ -198,24 +263,54 @@ def generate_feature_importance(df, output_path):
     plt.ylabel('Feature')
     
     # Add importance values as text annotations
-    for i, (idx, val) in enumerate(zip(top_indices, importances[top_indices])):
+    for i, (idx, val) in enumerate(zip(top_indices, importances_mdi[top_indices])):
         plt.text(val + 0.005, i, f'{val:.3f}', va='center')
     
     plt.tight_layout()
     plt.savefig(output_path, bbox_inches='tight')
     plt.close()
-    print(f"✓ Saved feature importance plot to {output_path}")
+    print(f"\n✓ Saved feature importance plot to {output_path}")
     
-    # Print numerical results for reporting
-    print("\nTop 10 Most Important Features:")
-    print("="*50)
+    # Print detailed results for reporting
+    print("\n" + "="*60)
+    print("TOP 10 MOST IMPORTANT FEATURES")
+    print("="*60)
+    print(f"{'Rank':<5} {'Feature':<30} {'MDI':<10} {'Perm±SE'}")
+    print("-"*60)
     for i, idx in enumerate(top_indices, 1):
-        print(f"{i:2d}. {X.columns[idx]:30s} {importances[idx]:.4f}")
+        feature_name = X.columns[idx]
+        mdi_val = importances_mdi[idx]
+        perm_val = importances_perm[idx]
+        perm_se = importances_perm_std[idx]
+        print(f"{i:<5} {feature_name:<30} {mdi_val:.4f}    {perm_val:.4f}±{perm_se:.4f}")
+    
+    # Compile metrics dictionary
+    metrics = {
+        'n_samples': len(df),
+        'n_features': X.shape[1],
+        'oob_r2': oob_score,
+        'cv_r2_mean': r2_cv,
+        'cv_r2_std': r2_cv_std,
+        'cv_rmse': rmse_cv,
+        'cv_mae': mae_cv,
+        'train_r2': r2_train,
+        'feature_names': X.columns.tolist(),
+        'importances_mdi': importances_mdi.tolist(),
+        'importances_perm_mean': importances_perm.tolist(),
+        'importances_perm_std': importances_perm_std.tolist(),
+        'top_features': [X.columns[idx] for idx in top_indices],
+        'top_importances_mdi': [importances_mdi[idx] for idx in top_indices],
+        'top_importances_perm': [importances_perm[idx] for idx in top_indices],
+        'top_importances_perm_std': [importances_perm_std[idx] for idx in top_indices]
+    }
+    
+    return metrics
 
 if __name__ == "__main__":
     # ========================================================================
     # MAIN EXECUTION
     # ========================================================================
+    import json
     
     # Use SYNTHETIC DATA (not real FOUN data - privacy protection)
     # To use real data: replace with '2023_12_8_targeted_eval.csv'
@@ -232,19 +327,36 @@ if __name__ == "__main__":
     print("\n" + "-"*70)
     print("Generating Correlation Heatmap...")
     print("-"*70)
-    generate_correlation_heatmap(df, 'texfigures/correlation_heatmap.png')
+    generate_correlation_heatmap(df, 'journalPaper/Images/correlation_heatmap.png')
     
-    # Step 3: Generate feature importance
+    # Step 3: Generate feature importance and capture metrics
     print("\n" + "-"*70)
     print("Generating Feature Importance Plot...")
     print("-"*70)
-    generate_feature_importance(df, 'texfigures/feature_importance.png')
+    metrics = generate_feature_importance(df, 'journalPaper/Images/feature_importance.png')
+    
+    # Save metrics to JSON for LaTeX integration
+    metrics_file = 'journalPaper/model_metrics.json'
+    with open(metrics_file, 'w') as f:
+        json.dump(metrics, f, indent=2)
+    print(f"\n✓ Saved model metrics to {metrics_file}")
     
     print("\n" + "="*70)
-    print("✓ All figures generated successfully!")
+    print("✓ All figures and metrics generated successfully!")
     print("="*70)
+    print("\nGenerated outputs:")
+    print("1. Correlation heatmap: journalPaper/Images/correlation_heatmap.png")
+    print("2. Feature importance plot: journalPaper/Images/feature_importance.png")
+    print("3. Model metrics (JSON): journalPaper/model_metrics.json")
+    print("\nMetrics Summary:")
+    print(f"  - Cross-Validation R²: {metrics['cv_r2_mean']:.4f} (±{metrics['cv_r2_std']:.4f})")
+    print(f"  - CV RMSE: {metrics['cv_rmse']:.4f}")
+    print(f"  - CV MAE: {metrics['cv_mae']:.4f}")
+    print(f"  - OOB R²: {metrics['oob_r2']:.4f}")
+    print(f"\nTop 3 Features:")
+    for i in range(min(3, len(metrics['top_features']))):
+        print(f"  {i+1}. {metrics['top_features'][i]}: {metrics['top_importances_mdi'][i]:.4f}")
     print("\nNext steps:")
-    print("1. View figures in 'texfigures/' directory")
-    print("2. Include in LaTeX document: \\includegraphics{texfigures/correlation_heatmap.png}")
+    print("1. Review figures in 'journalPaper/Images/' directory")
+    print("2. Metrics will be auto-inserted into LaTeX document")
     print("3. Interpret results in context of preservation planning\n")
-

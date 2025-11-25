@@ -1,0 +1,473 @@
+{
+  "correlation_analysis": {
+    "n_variables": 11,
+    "n_comparisons": 55,
+    "bonferroni_alpha": 0.0009090909090909091,
+    "total_scr_correlations": [
+      {
+        "variable": "Cap Deterioration",
+        "r": 0.40636964075193205,
+        "p": 0.0006444098870997951,
+        "bonferroni_significant": true
+      },
+      {
+        "variable": "Out of Plane",
+        "r": 0.49769111494128554,
+        "p": 1.8270179753544453e-05,
+        "bonferroni_significant": true
+      },
+      {
+        "variable": "Height",
+        "r": 0.3726962380913249,
+        "p": 0.0018965730806270067,
+        "bonferroni_significant": false
+      },
+      {
+        "variable": "Structural Cracking",
+        "r": 0.5435881889471209,
+        "p": 1.9980537333145276e-06,
+        "bonferroni_significant": true
+      },
+      {
+        "variable": "Bracing",
+        "r": 0.14442660228269594,
+        "p": 0.24358985199489322,
+        "bonferroni_significant": false
+      },
+      {
+        "variable": "Sill 1",
+        "r": 0.3462854368994476,
+        "p": 0.004098057675925823,
+        "bonferroni_significant": false
+      },
+      {
+        "variable": "Sill 2",
+        "r": 0.3524267697699776,
+        "p": 0.0034454407510182057,
+        "bonferroni_significant": false
+      },
+      {
+        "variable": "Coat 1 Cracking",
+        "r": 0.3217037911329097,
+        "p": 0.007938462243333711,
+        "bonferroni_significant": false
+      },
+      {
+        "variable": "Lintel Deterioration",
+        "r": 0.3457836435360584,
+        "p": 0.0041559339704260664,
+        "bonferroni_significant": false
+      },
+      {
+        "variable": "Foundation Height",
+        "r": 0.3251725477291762,
+        "p": 0.007254006605070383,
+        "bonferroni_significant": false
+      }
+    ],
+    "correlation_matrix": {
+      "Total Scr": {
+        "Total Scr": 1.0,
+        "Cap Deterioration": 0.40636964075193205,
+        "Out of Plane": 0.49769111494128554,
+        "Height": 0.3726962380913249,
+        "Structural Cracking": 0.5435881889471209,
+        "Bracing": 0.14442660228269594,
+        "Sill 1": 0.3462854368994476,
+        "Sill 2": 0.3524267697699776,
+        "Coat 1 Cracking": 0.3217037911329097,
+        "Lintel Deterioration": 0.3457836435360584,
+        "Foundation Height": 0.3251725477291762
+      },
+      "Cap Deterioration": {
+        "Total Scr": 0.40636964075193205,
+        "Cap Deterioration": 1.0,
+        "Out of Plane": -0.05873174283724479,
+        "Height": -0.2255583951386783,
+        "Structural Cracking": 0.056374770156175036,
+        "Bracing": -0.12681076041998554,
+        "Sill 1": 0.009694585440219245,
+        "Sill 2": 0.031865082962492124,
+        "Coat 1 Cracking": 0.018348523924400523,
+        "Lintel Deterioration": 0.08726211008752094,
+        "Foundation Height": 0.2631220066391318
+      },
+      "Out of Plane": {
+        "Total Scr": 0.49769111494128554,
+        "Cap Deterioration": -0.05873174283724479,
+        "Out of Plane": 1.0,
+        "Height": 0.3941071618398147,
+        "Structural Cracking": 0.31954256654739455,
+        "Bracing": 0.4114786201138989,
+        "Sill 1": -0.012682323809848309,
+        "Sill 2": -0.00823919197790213,
+        "Coat 1 Cracking": -0.07673182080458012,
+        "Lintel Deterioration": -0.09624317269363009,
+        "Foundation Height": -0.09048700798635988
+      },
+      "Height": {
+        "Total Scr": 0.3726962380913249,
+        "Cap Deterioration": -0.2255583951386783,
+        "Out of Plane": 0.3941071618398147,
+        "Height": 1.0,
+        "Structural Cracking": 0.21446867366695363,
+        "Bracing": 0.05207672965715373,
+        "Sill 1": -0.02373990359167909,
+        "Sill 2": -0.011289528823751595,
+        "Coat 1 Cracking": 0.13569310610925894,
+        "Lintel Deterioration": 0.1758909337563793,
+        "Foundation Height": -0.042612039553022146
+      },
+      "Structural Cracking": {
+        "Total Scr": 0.5435881889471209,
+        "Cap Deterioration": 0.056374770156175036,
+        "Out of Plane": 0.31954256654739455,
+        "Height": 0.21446867366695363,
+        "Structural Cracking": 1.0,
+        "Bracing": 0.23005490058331768,
+        "Sill 1": 0.07861779847852443,
+        "Sill 2": 0.08509149160094731,
+        "Coat 1 Cracking": -0.09484058111043304,
+        "Lintel Deterioration": -0.0036724519348551522,
+        "Foundation Height": 0.21127826191507698
+      },
+      "Bracing": {
+        "Total Scr": 0.14442660228269594,
+        "Cap Deterioration": -0.12681076041998554,
+        "Out of Plane": 0.4114786201138989,
+        "Height": 0.05207672965715373,
+        "Structural Cracking": 0.23005490058331768,
+        "Bracing": 1.0,
+        "Sill 1": 0.10273040779652107,
+        "Sill 2": 0.10528776270413268,
+        "Coat 1 Cracking": -0.2751933744716563,
+        "Lintel Deterioration": -0.27296187607259387,
+        "Foundation Height": -0.01163045222388281
+      },
+      "Sill 1": {
+        "Total Scr": 0.3462854368994476,
+        "Cap Deterioration": 0.009694585440219245,
+        "Out of Plane": -0.012682323809848309,
+        "Height": -0.02373990359167909,
+        "Structural Cracking": 0.07861779847852443,
+        "Bracing": 0.10273040779652107,
+        "Sill 1": 1.0,
+        "Sill 2": 0.9927503270062318,
+        "Coat 1 Cracking": 0.011360228215648067,
+        "Lintel Deterioration": -0.007766698606290122,
+        "Foundation Height": 0.09631568916623467
+      },
+      "Sill 2": {
+        "Total Scr": 0.3524267697699776,
+        "Cap Deterioration": 0.031865082962492124,
+        "Out of Plane": -0.00823919197790213,
+        "Height": -0.011289528823751595,
+        "Structural Cracking": 0.08509149160094731,
+        "Bracing": 0.10528776270413268,
+        "Sill 1": 0.9927503270062318,
+        "Sill 2": 1.0,
+        "Coat 1 Cracking": -0.013378498191272995,
+        "Lintel Deterioration": -0.034626180968821196,
+        "Foundation Height": 0.10045508987153097
+      },
+      "Coat 1 Cracking": {
+        "Total Scr": 0.3217037911329097,
+        "Cap Deterioration": 0.018348523924400523,
+        "Out of Plane": -0.07673182080458012,
+        "Height": 0.13569310610925894,
+        "Structural Cracking": -0.09484058111043304,
+        "Bracing": -0.2751933744716563,
+        "Sill 1": 0.011360228215648067,
+        "Sill 2": -0.013378498191272995,
+        "Coat 1 Cracking": 1.0,
+        "Lintel Deterioration": 0.7316543815079274,
+        "Foundation Height": -0.15422677253725237
+      },
+      "Lintel Deterioration": {
+        "Total Scr": 0.3457836435360584,
+        "Cap Deterioration": 0.08726211008752094,
+        "Out of Plane": -0.09624317269363009,
+        "Height": 0.1758909337563793,
+        "Structural Cracking": -0.0036724519348551522,
+        "Bracing": -0.27296187607259387,
+        "Sill 1": -0.007766698606290122,
+        "Sill 2": -0.034626180968821196,
+        "Coat 1 Cracking": 0.7316543815079274,
+        "Lintel Deterioration": 1.0,
+        "Foundation Height": -0.042114980909970706
+      },
+      "Foundation Height": {
+        "Total Scr": 0.3251725477291762,
+        "Cap Deterioration": 0.2631220066391318,
+        "Out of Plane": -0.09048700798635988,
+        "Height": -0.042612039553022146,
+        "Structural Cracking": 0.21127826191507698,
+        "Bracing": -0.01163045222388281,
+        "Sill 1": 0.09631568916623467,
+        "Sill 2": 0.10045508987153097,
+        "Coat 1 Cracking": -0.15422677253725237,
+        "Lintel Deterioration": -0.042114980909970706,
+        "Foundation Height": 1.0
+      }
+    },
+    "p_value_matrix": {
+      "Total Scr": {
+        "Total Scr": 1.0,
+        "Cap Deterioration": 0.0006444098870997951,
+        "Out of Plane": 1.8270179753544453e-05,
+        "Height": 0.0018965730806270067,
+        "Structural Cracking": 1.9980537333145276e-06,
+        "Bracing": 0.24358985199489322,
+        "Sill 1": 0.004098057675925823,
+        "Sill 2": 0.0034454407510182057,
+        "Coat 1 Cracking": 0.007938462243333711,
+        "Lintel Deterioration": 0.0041559339704260664,
+        "Foundation Height": 0.007254006605070383
+      },
+      "Cap Deterioration": {
+        "Total Scr": 0.0006444098870997951,
+        "Cap Deterioration": 1.0,
+        "Out of Plane": 0.636854785039549,
+        "Height": 0.06646732468883984,
+        "Structural Cracking": 0.6504594068413602,
+        "Bracing": 0.30650062391330946,
+        "Sill 1": 0.9379377864015551,
+        "Sill 2": 0.7979636260158676,
+        "Coat 1 Cracking": 0.8828359565743319,
+        "Lintel Deterioration": 0.4825728688691312,
+        "Foundation Height": 0.03145415235845734
+      },
+      "Out of Plane": {
+        "Total Scr": 1.8270179753544453e-05,
+        "Cap Deterioration": 0.636854785039549,
+        "Out of Plane": 1.0,
+        "Height": 0.0009673797505980128,
+        "Structural Cracking": 0.008392911692953081,
+        "Bracing": 0.0005415647507508162,
+        "Sill 1": 0.9188679800954702,
+        "Sill 2": 0.947240388619674,
+        "Coat 1 Cracking": 0.5371237856612164,
+        "Lintel Deterioration": 0.43848146829532647,
+        "Foundation Height": 0.4664756432870977
+      },
+      "Height": {
+        "Total Scr": 0.0018965730806270067,
+        "Cap Deterioration": 0.06646732468883984,
+        "Out of Plane": 0.0009673797505980128,
+        "Height": 1.0,
+        "Structural Cracking": 0.08136730703841397,
+        "Bracing": 0.6755606046149657,
+        "Sill 1": 0.8487689221424246,
+        "Sill 2": 0.9277527454299817,
+        "Coat 1 Cracking": 0.2735748656006559,
+        "Lintel Deterioration": 0.1545154018673942,
+        "Foundation Height": 0.7320602718534563
+      },
+      "Structural Cracking": {
+        "Total Scr": 1.9980537333145276e-06,
+        "Cap Deterioration": 0.6504594068413602,
+        "Out of Plane": 0.008392911692953081,
+        "Height": 0.08136730703841397,
+        "Structural Cracking": 1.0,
+        "Bracing": 0.06108928938844487,
+        "Sill 1": 0.5271359319759085,
+        "Sill 2": 0.4935713346622275,
+        "Coat 1 Cracking": 0.44521443161238483,
+        "Lintel Deterioration": 0.9764700467425924,
+        "Foundation Height": 0.08611177710184371
+      },
+      "Bracing": {
+        "Total Scr": 0.24358985199489322,
+        "Cap Deterioration": 0.30650062391330946,
+        "Out of Plane": 0.0005415647507508162,
+        "Height": 0.6755606046149657,
+        "Structural Cracking": 0.06108928938844487,
+        "Bracing": 1.0,
+        "Sill 1": 0.40809428527195213,
+        "Sill 2": 0.39646061055050097,
+        "Coat 1 Cracking": 0.024204062152488787,
+        "Lintel Deterioration": 0.02542602653328742,
+        "Foundation Height": 0.9255771088390042
+      },
+      "Sill 1": {
+        "Total Scr": 0.004098057675925823,
+        "Cap Deterioration": 0.9379377864015551,
+        "Out of Plane": 0.9188679800954702,
+        "Height": 0.8487689221424246,
+        "Structural Cracking": 0.5271359319759085,
+        "Bracing": 0.40809428527195213,
+        "Sill 1": 1.0,
+        "Sill 2": 1.5468405415520795e-61,
+        "Coat 1 Cracking": 0.9273015263374959,
+        "Lintel Deterioration": 0.9502620493367671,
+        "Foundation Height": 0.43813492360920286
+      },
+      "Sill 2": {
+        "Total Scr": 0.0034454407510182057,
+        "Cap Deterioration": 0.7979636260158676,
+        "Out of Plane": 0.947240388619674,
+        "Height": 0.9277527454299817,
+        "Structural Cracking": 0.4935713346622275,
+        "Bracing": 0.39646061055050097,
+        "Sill 1": 1.5468405415520795e-61,
+        "Sill 2": 1.0,
+        "Coat 1 Cracking": 0.9144306581500763,
+        "Lintel Deterioration": 0.7808764079405905,
+        "Foundation Height": 0.4186099649398387
+      },
+      "Coat 1 Cracking": {
+        "Total Scr": 0.007938462243333711,
+        "Cap Deterioration": 0.8828359565743319,
+        "Out of Plane": 0.5371237856612164,
+        "Height": 0.2735748656006559,
+        "Structural Cracking": 0.44521443161238483,
+        "Bracing": 0.024204062152488787,
+        "Sill 1": 0.9273015263374959,
+        "Sill 2": 0.9144306581500763,
+        "Coat 1 Cracking": 1.0,
+        "Lintel Deterioration": 2.025851644887453e-12,
+        "Foundation Height": 0.21272229360068082
+      },
+      "Lintel Deterioration": {
+        "Total Scr": 0.0041559339704260664,
+        "Cap Deterioration": 0.4825728688691312,
+        "Out of Plane": 0.43848146829532647,
+        "Height": 0.1545154018673942,
+        "Structural Cracking": 0.9764700467425924,
+        "Bracing": 0.02542602653328742,
+        "Sill 1": 0.9502620493367671,
+        "Sill 2": 0.7808764079405905,
+        "Coat 1 Cracking": 2.025851644887453e-12,
+        "Lintel Deterioration": 1.0,
+        "Foundation Height": 0.7350702283828047
+      },
+      "Foundation Height": {
+        "Total Scr": 0.007254006605070383,
+        "Cap Deterioration": 0.03145415235845734,
+        "Out of Plane": 0.4664756432870977,
+        "Height": 0.7320602718534563,
+        "Structural Cracking": 0.08611177710184371,
+        "Bracing": 0.9255771088390042,
+        "Sill 1": 0.43813492360920286,
+        "Sill 2": 0.4186099649398387,
+        "Coat 1 Cracking": 0.21272229360068082,
+        "Lintel Deterioration": 0.7350702283828047,
+        "Foundation Height": 1.0
+      }
+    }
+  },
+  "factor_analysis": {
+    "kmo_overall": 0.557750638342115,
+    "kmo_interpretation": "miserable",
+    "kmo_by_variable": {
+      "Sill 1": 0.4822297927688366,
+      "Sill 2": 0.48060025997839834,
+      "Coat 1 Cracking": 0.5886795801538006,
+      "Coat 1 Loss": 0.5688111938234777,
+      "Lintel Deterioration": 0.6607294585193538,
+      "Coat 2 Cracking": 0.7637801186466264,
+      "Structural Cracking": 0.4721533289322841,
+      "Out of Plane": 0.4732775409568145
+    },
+    "bartlett_chi2": 376.0407339549407,
+    "bartlett_df": 28,
+    "bartlett_p": 1.3967211881169984e-62,
+    "n_factors": 3,
+    "loadings_varimax": {
+      "Factor 1": {
+        "Sill 1": 0.04630154965777318,
+        "Sill 2": 0.02539326420220296,
+        "Coat 1 Cracking": 1.001737998745223,
+        "Coat 1 Loss": 0.44070592228515715,
+        "Lintel Deterioration": 0.7265689452499855,
+        "Coat 2 Cracking": 0.5937951748114296,
+        "Structural Cracking": -0.06367564548737625,
+        "Out of Plane": -0.0581265054504898
+      },
+      "Factor 2": {
+        "Sill 1": 0.9916236061803549,
+        "Sill 2": 0.9967196060243906,
+        "Coat 1 Cracking": -0.03608219196264503,
+        "Coat 1 Loss": 0.035136934760439865,
+        "Lintel Deterioration": -0.04263720062304847,
+        "Coat 2 Cracking": 0.0838977492200237,
+        "Structural Cracking": 0.06464025759140844,
+        "Out of Plane": -0.06048426656815448
+      },
+      "Factor 3": {
+        "Sill 1": 0.05181227983447455,
+        "Sill 2": 0.05413223702454907,
+        "Coat 1 Cracking": -0.03124449683198731,
+        "Coat 1 Loss": -0.14208530290198226,
+        "Lintel Deterioration": -0.03569980504735164,
+        "Coat 2 Cracking": -0.04353654721561893,
+        "Structural Cracking": 0.318052618714248,
+        "Out of Plane": 0.9951191320200776
+      }
+    },
+    "communalities": {
+      "Sill 1": 0.9881457221764888,
+      "Sill 2": 0.9970250899855413,
+      "Coat 1 Cracking": 1.0057571612891978,
+      "Coat 1 Loss": 0.21564454742231842,
+      "Lintel Deterioration": 0.5309948391590654,
+      "Coat 2 Cracking": 0.3615269728969801,
+      "Structural Cracking": 0.10939041900070848,
+      "Out of Plane": 0.9972991240505661
+    },
+    "variance_explained": {
+      "ss_loadings": [
+        2.0884177997299824,
+        1.9959973507336635,
+        1.1213687255172202
+      ],
+      "proportion_var": [
+        0.2610522249662478,
+        0.24949966884170793,
+        0.14017109068965253
+      ],
+      "cumulative_var": [
+        0.2610522249662478,
+        0.5105518938079557,
+        0.6507229844976082
+      ],
+      "total_var_explained_pct": 65.07229844976082
+    },
+    "factor1_var_pct": 26.10522249662478,
+    "factor2_var_pct": 24.94996688417079,
+    "factor3_var_pct": 14.017109068965253,
+    "loadings_promax": {
+      "Factor 1": {
+        "Sill 1": 0.016488373583803694,
+        "Sill 2": -0.004773750487879754,
+        "Coat 1 Cracking": 1.021897473064433,
+        "Coat 1 Loss": 0.42960372336013486,
+        "Lintel Deterioration": 0.73999487741369,
+        "Coat 2 Cracking": 0.5981838133118023,
+        "Structural Cracking": -0.023005773054319296,
+        "Out of Plane": 0.08249126463305824
+      },
+      "Factor 2": {
+        "Sill 1": 0.9925793958226501,
+        "Sill 2": 0.9982030283495041,
+        "Coat 1 Cracking": -0.06478930351819802,
+        "Coat 1 Loss": 0.030071244255733664,
+        "Lintel Deterioration": -0.0628060054471988,
+        "Coat 2 Cracking": 0.06886502544005112,
+        "Structural Cracking": 0.04884204169804953,
+        "Out of Plane": -0.11558402457583546
+      },
+      "Factor 3": {
+        "Sill 1": 0.005653085129588615,
+        "Sill 2": 0.00533556369587253,
+        "Coat 1 Cracking": 0.08630525393362612,
+        "Coat 1 Loss": -0.0968192631745019,
+        "Lintel Deterioration": 0.05006296457131024,
+        "Coat 2 Cracking": 0.019785417665426366,
+        "Structural Cracking": 0.3164069701571002,
+        "Out of Plane": 1.0204383099809358
+      }
+    },
+    "promax_similar_to_varimax": true
+  }
+}
