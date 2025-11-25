@@ -14,42 +14,32 @@ These notebooks use a "Scaffolded Learning" approach:
 
 ## 🚀 Getting Started
 
-### 1. Install Requirements
-You need Python and Jupyter. Run this command to install the necessary libraries, including the interactive widgets:
+**No installation required!** You can run these tutorials directly in your browser using Google Colab.
 
-```bash
-pip install pandas numpy seaborn matplotlib scikit-learn factor-analyzer ipywidgets
-```
+### 1. Launch the Tutorials
 
-### 2. Generate Data
-To protect the privacy of the Fort Union site, we use a synthetic data generator. Run this once:
+| Lesson | Topic | Link |
+| :--- | :--- | :--- |
+| **Tutorial 1** | Interactive Diagnostics | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/rkn2/FOUN_boxes/blob/main/grant_methodology_demo.ipynb) |
+| **Tutorial 2** | Decision Making & Budgeting | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/rkn2/FOUN_boxes/blob/main/intervention_matrix_notebook.ipynb) |
 
-```bash
-python3 generate_synthetic_data.py
-```
-
-### 3. Launch the Tutorials
-Start Jupyter Lab or Notebook:
-
-```bash
-jupyter notebook
-```
+### 2. Load the Data (Important!)
+When you open the notebooks in Colab, you will need to upload the data file:
+1.  Download `synthetic_adobe_data.csv` from this repository.
+2.  In Colab, click the **Folder Icon** 📁 on the left sidebar.
+3.  Upload the CSV file.
 
 ---
 
 ## 📚 The Tutorials
 
 ### **Tutorial 1: Interactive Diagnostics**
-📓 `grant_methodology_demo.ipynb`
-
 **What you'll do:**
 -   **Data Explorer (No-Code):** Use a dropdown menu to visualize different damage types.
 -   **Factor Analysis (Low-Code):** Use a slider to group damage types into "Latent Vulnerabilities." See the heatmap update in real-time.
 -   **Machine Learning (Low-Code):** Tune a Random Forest using sliders (Number of Trees, Depth) to see which features drive degradation.
 
 ### **Tutorial 2: Decision Making & Budgeting**
-📓 `intervention_matrix_notebook.ipynb`
-
 **What you'll do:**
 -   **Matrix Builder:** Interactively build an intervention priority matrix. Select problems and solutions from dropdowns and assign scores.
 -   **The Budget Game:** You have $10,000. Use sliders to allocate repairs (Fill Foundation, Drip Edge, etc.). Try to maximize your preservation score without going over budget!
@@ -72,9 +62,6 @@ FOUN_boxes/
 ---
 
 ## 🎓 For Instructors
-
-**Course Integration:**
-These materials are designed for graduate courses like **AE 597: Diagnostics and Monitoring**.
 
 **Learning Objectives:**
 1.  **Conceptual:** Understand Factor Analysis and Random Forests without getting bogged down in syntax.
