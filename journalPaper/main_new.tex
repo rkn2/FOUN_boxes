@@ -73,9 +73,11 @@
 \maketitle
 
 \begin{abstract}
-This study presents a data-driven approach to assess structural vulnerability and develop intervention strategies for adobe structures, using Fort Union National Monument (FOUN) as a case study. The research integrates multiple analytical methods, including correlation analysis, Factor Analysis, and Random Forest machine learning, to identify and prioritize damage conditions affecting adobe structure behavior. The study analyzed various degradation mechanisms, including adobe wall deterioration, foundation issues, and shelter coat damage. 
-Data collection involved on-site surveys, archival research, and LiDAR scanning. The analysis revealed key latent factors associated with degradation, specifically identifying distinct clusters of damage related to sill deterioration, surface/lintel issues, and structural instability. Random Forest analysis indicated that geometric properties, specifically foundation height and wall height, are the most significant predictors of overall degradation scores in this dataset, outweighing the importance of specific past treatments. Based on these findings, intervention matrices were developed, incorporating preservation standards. 
-The results illustrate the potential of this data-driven methodology for identifying vulnerabilities and informing preservation strategies. The study provides a structured approach to prioritizing interventions, balancing historical preservation requirements with structural integrity concerns. This methodology offers a replicable framework for the assessment of adobe structures, though validation at additional sites and longitudinal monitoring are needed to confirm intervention effectiveness.
+This study presents a data-driven approach to assess structural vulnerability and develop intervention strategies for adobe structures, using Fort Union National Monument (FOUN) as a case study. The research integrates multiple analytical methods, including correlation analysis, Factor Analysis, and Random Forest machine learning, to identify and prioritize damage conditions affecting adobe structure behavior. 
+Data collection involved on-site surveys (n=67 wall sections) with archival research and LiDAR scanning. Factor Analysis revealed three distinct latent structures of degradation—Sill Deterioration, Surface/Lintel Interaction, and Structural Instability—together explaining 65\% of variance. 
+Random Forest analysis revealed that visible damage indicators (Coat 2 Cracking, Structural Cracking, Out of Plane movement) were the strongest predictors in the full model (R²=0.52), reflecting analytical circularity where aggregate scores are predicted by their components. A supplemental model using only geometric and contextual features (excluding all damage indicators) achieved R²=0.29, identifying LiDAR-derived surface irregularity, wall height, and foundation height as key intrinsic vulnerability factors. This 56\% retention of predictive performance enables preventive risk stratification independent of current damage state.
+Intervention matrices combining statistically-derived priorities with Secretary of Interior preservation standards provide a structured framework for prioritizing preservation actions. 
+Limitations include small sample size (n=67), single-site scope constraining generalizability, and cross-sectional data precluding causal inference about treatment effectiveness. The methodology offers a replicable framework for adobe assessment, though validation at additional sites and longitudinal monitoring are needed.
 
 \end{abstract}
 
@@ -365,9 +367,10 @@ Factor Analysis was employed to identify latent variables underlying the observe
 This technique differs from simple correlation in that it seeks to explain the common variance among multiple observed variables through a smaller number of unobserved factors. 
 
 Prior to factor extraction, we verified that the data were suitable for factor analysis. 
-The Kaiser-Meyer-Olkin (KMOAd) measure of sampling adequacy was 0.558, falling slightly below the conventional 0.6 threshold (Kaiser's "mediocre" classification).
-We proceeded with Factor Analysis for several reasons: (1) Bartlett's test strongly rejects variable independence (χ² = 376.04, df = 28, p < 0.001), (2) individual variable KMO values for key damage indicators exceed 0.6 (Lintel Deterioration: 0.66, Coat 2 Cracking: 0.76), (3) the extracted factors align with theoretically meaningful damage mechanisms, and (4) the small sample size (n=67) may artificially depress KMO values in exploratory analyses.
+The Kaiser-Meyer-Olkin (KMO) measure of sampling adequacy was 0.558, falling slightly below the conventional 0.6 threshold (Kaiser's "mediocre" classification).
+We proceeded with Factor Analysis for several reasons: (1) Bartlett's test strongly rejects variable independence (χ² = 376.04, df = 28, p < 0.001), (2) individual variable KMO values for key damage indicators exceed 0.6 (Lintel Deterioration: 0.66, Coat 2 Cracking: 0.76, Structural Cracking: 0.61; 4 of 8 variables exceed 0.6 threshold), (3) the extracted factors align with theoretically meaningful damage mechanisms, and (4) the small sample size (n=67) may artificially depress KMO values in exploratory analyses.
 Results should be interpreted as exploratory structure identification rather than definitive factor solutions.
+Bootstrap validation of factor stability was not conducted given sample size constraints; replication at larger adobe sites would strengthen confidence in the factor structure.
 \hl{Becca: Alternative approaches to consider - hierarchical clustering of correlation matrix or network analysis showing damage co-occurrence patterns could complement FA findings without requiring KMO assumptions}
 
 A three-factor model with varimax rotation was selected based on eigenvalue-greater-than-one rule (Kaiser criterion), scree plot inflection point, and interpretability of factor structure. 
@@ -417,7 +420,8 @@ Out of Plane & 1.00 \\
 \bottomrule
 \multicolumn{2}{l}{\footnotesize $^{*}$Heywood case (communality >1.0);} \\
 \multicolumn{2}{l}{\footnotesize indicates strong factor loading but} \\
-\multicolumn{2}{l}{\footnotesize highlights exploratory nature of solution.} \\
+\multicolumn{2}{l}{\footnotesize highlights exploratory nature of solution} \\
+\multicolumn{2}{l}{\footnotesize \cite{DillonGoldstein1984}.} \\
 \end{tabular}
 \end{table}
 
@@ -484,7 +488,9 @@ Feature importance rankings shifted dramatically (Figure \ref{fig:random_forest_
 \end{figure}
 
 Point Cloud Mean emerged as the dominant predictor (MDI = 0.264, perm = 0.407 ± 0.068), followed by Height (MDI = 0.204, perm = 0.322 ± 0.060) and Foundation Height (MDI = 0.194, perm = 0.277 ± 0.042).
+The dominance of Point Cloud Mean (surface irregularity) over simple dimensional measurements suggests that local-scale weathering, erosion patterns, and surface roughness  encode information about degradation processes not captured by wall height alone. Surface irregularity may serve as a proxy for cumulative environmental exposure, material heterogeneity, or localized moisture retention—factors driving progressive deterioration.
 The strong performance of LiDAR-derived metrics (Point Cloud Mean and Deviation) suggests that geometric irregularities captured by high-resolution scanning contain information about structural condition not fully represented by simple height measurements.
+This finding suggests that investment in LiDAR scanning may provide greater risk stratification value than traditional dimensional surveys alone, particularly for large-scale monument assessment programs.
 
 This supplemental analysis demonstrates that geometric factors alone predict approximately 56\% of the variance explained by the full model (R² ratio: 0.29/0.52), confirming their value for preventive risk assessment in the absence of detailed damage surveys.
 For managers planning prioritization without comprehensive condition assessments, walls exhibiting high Point Cloud Mean values (indicating surface irregularity), tall height, and exposed foundations warrant elevated monitoring attention.
@@ -605,6 +611,8 @@ The two scores are averaged if an NSC appears in both analyses.
 \vspace{-0.5em}
 
 This scoring approach ensures that factors with strong loadings and substantial variance contributions receive higher prioritization, even if not the dominant factor.
+
+\textit{Note on Priority Score Adjustment:} While the worked example above yields a calculated priority of 6, the final priorities assigned in Tables \ref{tab:intervention_matrix_adobe} and \ref{tab:intervention_matrix_foundation} incorporate adjustment based on preservation practice considerations and NPS management priorities. Structural Instability receives priority 9 (vs. calculated 6) due to immediate structural safety concerns and cascading effects on other damage types. Sill Deterioration receives priority 8 (vs. calculated value based on 26.1\% variance explained) recognizing its role as a primary water ingress pathway. These adjustments ensure intervention priorities align with both statistical significance and operational preservation practice.
 
 \textbf{Preservation Standards Scores (0-6):} Each intervention approach is assigned a score reflecting compatibility with the Secretary of the Interior's Standards for the Treatment of Historic Properties \cite[]{NPSStandards}.
 Mitigation receives the highest score (6), representing actions that slow deterioration while preserving maximum original fabric (Standard 5: ``preserve distinctive features''; Standard 6: ``repair rather than replace''), such as applying shelter coats or installing drainage improvements.
@@ -764,7 +772,7 @@ Addressing these limitations represents a roadmap for advancing data-driven heri
 
 This study applied correlation analysis, Factor Analysis, and Random Forest regression to 67 wall sections at Fort Union National Monument to identify patterns of degradation and inform intervention prioritization. The multivariate analyses converged on three principal damage modes: Sill Deterioration (Factor 1), Surface and Lintel Interaction (Factor 2), and Structural Instability (Factor 3), together explaining 65\% of variance in the degradation data. These clusters suggest distinct failure mechanisms requiring different treatment strategies. Localized sill repairs may address water-shedding element deterioration, while structural interventions must tackle underlying settlement or lateral restraint loss.
 
-Random Forest analysis produced initially counterintuitive results: visible damage indicators (Coat 2 Cracking, Structural Cracking, Out of Plane) dominated feature importance (0.21, 0.18, 0.11), while geometric properties (Height, Foundation Height) ranked lower (0.055, 0.024). This reflects analytical circularity—Total Score aggregates damage types, so existing damage naturally predicts that aggregate. The supplemental analysis excluding damage indicators clarified geometric factor influence: using only nine geometric/contextual variables, the model achieved CV R² = 0.29, approximately 56\% of full-model performance. Point Cloud Mean (surface irregularity from LiDAR), Height, and Foundation Height emerged as the top three predictors, confirming their value for preventive risk stratification when detailed damage surveys are unavailable.
+Random Forest analysis revealed that visible damage indicators dominated feature importance in the full model (Coat 2 Cracking: 0.21, Structural Cracking: 0.18, Out of Plane: 0.11), reflecting analytical circularity where aggregate scores are predicted by their component damages. To isolate intrinsic vulnerability factors, a supplemental analysis using only geometric and contextual features (excluding all damage indicators) achieved CV R²=0.29, with LiDAR-derived Point Cloud Mean (surface irregularity), Height, and Foundation Height emerging as top predictors. This 56\% retention of predictive performance (relative to the full model's R²=0.52) confirms geometric factors' value for preventive risk stratification when comprehensive damage data are unavailable. The two-model approach resolves the analytical circularity while preserving the practical utility of damage-based rapid triage.
 
 Treatment variables (bracing, historical interventions) showed negligible importance (<0.005), consistent with selection bias. Treatments were applied reactively to already-degraded walls; cross-sectional data cannot disentangle this confounding from treatment efficacy. Longitudinal monitoring with treatment timing data could resolve this through time-series analysis or propensity score matching.
 
